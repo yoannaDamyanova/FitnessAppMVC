@@ -4,77 +4,53 @@ using System.Linq.Expressions;
 
 namespace FitnessApp.Data.Repository
 {
-    public class BaseRepository<TType, TId> : IRepository<TType, TId>
-        where TType : class
+    public class Repository : IRepository
     {
-        private readonly FitnessAppDbContext dbContext;
-        private readonly DbSet<TType> dbSet;
+        private readonly DbContext context;
 
-        public BaseRepository(FitnessAppDbContext dbContext)
+        public Repository(FitnessAppDbContext _context)
         {
-            this.dbContext = dbContext;
-            this.dbSet = this.dbContext.Set<TType>();
+            context = _context;
         }
 
-        public async Task<TType> GetByIdAsync(TId id)
+        private DbSet<T> DbSet<T>() where T : class
         {
-            TType entity = await this.dbSet
-                .FindAsync(id);
-
-            return entity;
+            return context.Set<T>();
         }
 
-        public async Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate)
+        public IQueryable<T> All<T>() where T : class
         {
-            TType entity = await this.dbSet
-                .FirstOrDefaultAsync(predicate);
-
-            return entity;
+            return DbSet<T>();
         }
 
-        public async Task<IEnumerable<TType>> GetAllAsync()
+        public IQueryable<T> AllReadOnly<T>() where T : class
         {
-            return await this.dbSet.ToArrayAsync();
+            return DbSet<T>()
+                .AsNoTracking();
         }
 
-        public IQueryable<TType> GetAllAttached()
+        public async Task AddAsync<T>(T entity) where T : class
         {
-            return this.dbSet.AsQueryable();
+            await DbSet<T>().AddAsync(entity);
         }
 
-        public async Task AddAsync(TType item)
+        public async Task<int> SaveChangesAsync()
         {
-            await this.dbSet.AddAsync(item);
-            await this.dbContext.SaveChangesAsync();
+            return await context.SaveChangesAsync();
         }
 
-        public async Task AddRangeAsync(TType[] items)
+        public async Task<T?> GetByIdAsync<T>(object id) where T : class
         {
-            await this.dbSet.AddRangeAsync(items);
-            await this.dbContext.SaveChangesAsync();
+            return await DbSet<T>().FindAsync(id);
         }
 
-        public async Task<bool> DeleteAsync(TType entity)
+        public async Task DeleteAsync<T>(object id) where T : class
         {
-            this.dbSet.Remove(entity);
-            await this.dbContext.SaveChangesAsync();
+            T? entity = await GetByIdAsync<T>(id);
 
-            return true;
-        }
-
-        public async Task<bool> UpdateAsync(TType item)
-        {
-            try
+            if (entity != null)
             {
-                this.dbSet.Attach(item);
-                this.dbContext.Entry(item).State = EntityState.Modified;
-                await this.dbContext.SaveChangesAsync();
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
+                DbSet<T>().Remove(entity);
             }
         }
     }

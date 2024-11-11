@@ -37,7 +37,13 @@
         public static class Instructor
         {
             public const int MaxBiographyLength = 500;
+            public const int MinBiographyLength = 10;
+
             public const int MaxSpecializationsLength = 100;
+            public const int MinSpecializationsLength = 10;
+
+            public const int MaxLicenseNumberLenght = 6;
+            public const int MinLicenseNumberLenght = 6;
         }
     }
 }

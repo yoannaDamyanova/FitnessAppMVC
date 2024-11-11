@@ -2,22 +2,18 @@
 
 namespace FitnessApp.Data.Repository.Contracts
 {
-    public interface IRepository<TType, TId>
+    public interface IRepository
     {
-        Task<TType> GetByIdAsync(TId id);
+        IQueryable<T> All<T>() where T : class;
 
-        Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate);
+        IQueryable<T> AllReadOnly<T>() where T : class;
 
-        Task<IEnumerable<TType>> GetAllAsync();
+        Task AddAsync<T>(T entity) where T : class;
 
-        IQueryable<TType> GetAllAttached();
+        Task<int> SaveChangesAsync();
 
-        Task AddAsync(TType item);
+        Task<T?> GetByIdAsync<T>(object id) where T : class;
 
-        Task AddRangeAsync(TType[] items);
-
-        Task<bool> DeleteAsync(TType entity);
-
-        Task<bool> UpdateAsync(TType item);
+        Task DeleteAsync<T>(object id) where T : class;
     }
 }
