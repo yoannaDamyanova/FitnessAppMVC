@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using static FitnessApp.Web.Extensions.ApplicationBuilderExtensions;
 using static FitnessApp.Web.Extensions.ServiceCollectionExtension;
+using FitnessApp.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitnessApp.Web
 {
@@ -21,8 +24,8 @@ namespace FitnessApp.Web
             {
                 var supportedCultures = new CultureInfo[]
                 {
-                    new CultureInfo("bg"),
-                    new CultureInfo("en")
+        new CultureInfo("bg"),
+        new CultureInfo("en")
                 };
 
                 options.DefaultRequestCulture = new RequestCulture("bg");
@@ -42,7 +45,7 @@ namespace FitnessApp.Web
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
 
-            //builder.Services.AddApplicationServices();
+            builder.Services.AddApplicationServices();
             builder.Services.AddMemoryCache();
 
             var app = builder.Build();

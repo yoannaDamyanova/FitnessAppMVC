@@ -24,7 +24,6 @@ namespace FitnessApp.Data.Models
         public double Rating { get; set; }
 
         [Required]
-
         public int LicenseNumber { get; set; }
 
         public List<FitnessClass> Classes { get; set; } = new List<FitnessClass> { };

@@ -90,7 +90,8 @@ namespace FitnessApp.Data.SeedDb
                 UserId = InstructorUser.Id,
                 Biography = "John Johnson is a dedicated fitness instructor with over a decade of experience in personal training and group fitness.Known for his motivating style and tailored workout plans, he specializes in strength training, HIIT, and functional fitness.John's mission is to help clients achieve their health goals while fostering a love for fitness. His approach combines expert guidance with an emphasis on form, endurance, and mental resilience, making him a trusted coach for all fitness levels.",
                 Specializations = "Strength training, HIIT, functional fitness, and personalized programs for all fitness levels.",
-                Rating = 4.8
+                Rating = 4.8,
+                LicenseNumber = 123456
             };
         }
 

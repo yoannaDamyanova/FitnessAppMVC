@@ -14,6 +14,10 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<int?> GetInstructorByIdAsync(string userId);
 
-        Task<bool> UserWithLicenseNumberExistsAsync(int licenseNumber);
+        Task<bool> UserWithLicenseNumberExistsInDbAsync(int licenseNumber);
+
+        bool UserWithLicenseNumberExistsGlobally(int licenseNumber);
+
+        Task<bool> IsLicenseNumberValidAsync(int licenseNumber);
     }
 }

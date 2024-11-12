@@ -29,9 +29,19 @@ namespace FitnessApp.Web.Controllers
         [NotAnInstructor]
         public async Task<IActionResult> Become(BecomeInstructorFormModel model)
         {
-            if (await instructorService.UserWithLicenseNumberExistsAsync(model.LicenseNumber))
+            if (await instructorService.UserWithLicenseNumberExistsInDbAsync(model.LicenseNumber))
             {
-                ModelState.AddModelError(nameof(model.LicenseNumber), LicenseNumberExists);
+                ModelState.AddModelError(nameof(model.LicenseNumber), LicenseNumberExistsInDb);
+            }
+
+            if(!instructorService.UserWithLicenseNumberExistsGlobally(model.LicenseNumber))
+            {
+                ModelState.AddModelError(nameof(model.LicenseNumber), LicenseNumberIsNotDiscoverable);
+            }
+
+            if (!await instructorService.IsLicenseNumberValidAsync(model.LicenseNumber))
+            {
+                ModelState.AddModelError(nameof(model.LicenseNumber), LicenseNumberIsNotValid);
             }
 
             if (ModelState.IsValid == false)

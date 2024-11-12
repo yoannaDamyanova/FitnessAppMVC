@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FitnessApp.Services.Data.Contracts
 {
-    public interface IBaseService
+    public interface ILicenseGeneratorService
     {
-        bool IsGuidValid(string? id, ref Guid parsedGuid);
+        public void GenerateLicenseNumbers();
     }
 }

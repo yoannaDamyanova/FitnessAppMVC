@@ -4,6 +4,7 @@ using FitnessApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessApp.Data.Migrations
 {
     [DbContext(typeof(FitnessAppDbContext))]
-    partial class FitnessAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241112090757_AddFirstLicenseNumberManually")]
+    partial class AddFirstLicenseNumberManually
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,7 +104,7 @@ namespace FitnessApp.Data.Migrations
                         {
                             Id = "06e4a52b-0ee1-426f-b7a2-6b009a0c1f65",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1a081385-adf2-4cbf-bf1e-dd28bfe7285f",
+                            ConcurrencyStamp = "300fd942-3512-4143-8fe1-2dca2d064c3d",
                             Email = "instructor@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "John",
@@ -109,9 +112,9 @@ namespace FitnessApp.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "instructor@gmail.com",
                             NormalizedUserName = "instructor@gmail.com",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAVTQFl5Uj3sOJ396WOmEKbbtf1HqWej2Hxyf8NEZSV6v+l2vsIWzL9sJgDlzoad2Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGoppdk3z66xMfXh5PzKG/M8tmrE/tP5iva/5ytimMygu7J/vyjlQjpnqt76bSaeXg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "908bcf41-b3ad-4422-b63a-174aad647f4d",
+                            SecurityStamp = "3006c63b-2e92-4376-a01f-6ab113151333",
                             TwoFactorEnabled = false,
                             UserName = "instructor@gmail.com"
                         },
@@ -119,7 +122,7 @@ namespace FitnessApp.Data.Migrations
                         {
                             Id = "69b38fdd-0aba-47f5-9f2b-6c7bb549d7ab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "515dec4f-713c-4795-a09e-0c7f88b50cd4",
+                            ConcurrencyStamp = "95e84b7b-cb74-44bf-bd93-84a9a45ce332",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Great",
@@ -127,9 +130,9 @@ namespace FitnessApp.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECjc9oiajNFqTBbVdUBr7Kb95bII322hMLLb6Vo7tnrfXrp1aD26yWc9Lg0zkqlC8A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAQnYQbr98Qo/2lI6oQaEnJc/fGYdyQCJ5TOMHGWeQQWoKImoR2wmin+F9PPIHQynA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7a124985-2787-49b7-97a3-4262eeec6cef",
+                            SecurityStamp = "d120a5d2-f158-4e5b-9744-648b154f51b5",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         });

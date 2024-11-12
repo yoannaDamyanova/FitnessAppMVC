@@ -12,7 +12,7 @@ namespace FitnessApp.Data
 
         }
 
-        public FitnessAppDbContext(DbContextOptions options)
+        public FitnessAppDbContext(DbContextOptions<FitnessAppDbContext> options)
         : base(options)
         {
         }

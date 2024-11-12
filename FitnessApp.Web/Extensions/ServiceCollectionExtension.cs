@@ -2,18 +2,31 @@
 using FitnessApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FitnessApp.Data.Repository.Contracts;
+using FitnessApp.Data.Repository;
+using FitnessApp.Services.Data.Contracts;
+using FitnessApp.Services.Data;
 
 namespace FitnessApp.Web.Extensions
 {
     public static class ServiceCollectionExtension
     {
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IBaseService, BaseService>();
+            services.AddScoped<IInstructorService, InstructorService>();
+            services.AddScoped<ILicenseGeneratorService, LicenseGeneratorService>();
+
+            return services;
+        }
+
         public static IServiceCollection AddApplicationDbContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config.GetConnectionString("FitnessConnection");
             services.AddDbContext<FitnessAppDbContext>(options =>
-                options.UseSqlServer(connectionString, o => o.MigrationsAssembly("FitnessApp.Data")));
+                options.UseSqlServer(connectionString));
 
-            //services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IRepository, Repository>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
