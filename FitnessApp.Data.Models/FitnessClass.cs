@@ -34,7 +34,7 @@ namespace FitnessApp.Data.Models
         public int Capacity { get; set; }
 
         [Required]
-        public Status Status { get; set; } = null!;
+        public bool Status { get; set; } 
 
         // Navigation properties
         [Required]

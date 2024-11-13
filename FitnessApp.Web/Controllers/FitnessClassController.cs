@@ -13,13 +13,10 @@ namespace FitnessApp.Web.Controllers
 
         private readonly IInstructorService instructorService;
 
-        private readonly ILogger logger;
-
-        public FitnessClassController(IFitnessClassService fitnessService, IInstructorService instructorService, ILogger logger)
+        public FitnessClassController(IFitnessClassService fitnessService, IInstructorService instructorService)
         {
             this.fitnessService = fitnessService;
             this.instructorService = instructorService;
-            this.logger = logger;
         }
 
         public void Index()

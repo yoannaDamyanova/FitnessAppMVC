@@ -5,6 +5,7 @@ using FitnessApp.Services.Data.Contracts;
 using FitnessApp.Web.ViewModels.Category;
 using FitnessApp.Web.ViewModels.FitnessClass;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace FitnessApp.Services.Data
                 StartTime = DateTime.Parse(model.StartTime),
                 Duration = model.Duration,
                 Capacity = model.Capacity,
+                Status = true
             };
 
             await repository.AddAsync(fitnessClass);
@@ -60,13 +62,12 @@ namespace FitnessApp.Services.Data
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
         {
             return await repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.Status.Name == "Active" && fc.Capacity > 0)
+                .Where(fc => fc.Status == true && fc.Capacity > 0)
                 .Take(5)
                 .Select(fc => new FitnessClassIndexServiceModel()
                 {
                     Id = fc.Id.ToString(),
                     Title = fc.Title,
-                    Status = fc.Status.Name,
                     StartTime = fc.StartTime.ToString(),
                     Duration = fc.Duration.ToString(),
                     InstructorName = fc.Instructor.User.FirstName
