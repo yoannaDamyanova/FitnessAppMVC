@@ -4,6 +4,7 @@ using FitnessApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessApp.Data.Migrations
 {
     [DbContext(typeof(FitnessAppDbContext))]
-    partial class FitnessAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241113101955_RemoveDurationProperty")]
+    partial class RemoveDurationProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,7 +104,7 @@ namespace FitnessApp.Data.Migrations
                         {
                             Id = "06e4a52b-0ee1-426f-b7a2-6b009a0c1f65",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7a489956-51d5-4697-81f5-eb546266416e",
+                            ConcurrencyStamp = "e0cab133-db25-477b-b773-92df0d43fb2e",
                             Email = "instructor@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "John",
@@ -109,9 +112,9 @@ namespace FitnessApp.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "instructor@gmail.com",
                             NormalizedUserName = "instructor@gmail.com",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPDzPaZAqKeNwst5ADgqUdEIP+jJ2mhPxrjEjUfbRO19LR8q8HARvN+61J676pGwAQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEJkIxqXcifO2R9hz71+Wltwm20E++vWhkGUZrTQHTElijGbsgJNAaPojUVW21N/hw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "834a8855-dc56-4b61-bd02-5201b08f57cc",
+                            SecurityStamp = "cc9082b2-752c-4408-9c9e-3b3d28f5149d",
                             TwoFactorEnabled = false,
                             UserName = "instructor@gmail.com"
                         },
@@ -119,7 +122,7 @@ namespace FitnessApp.Data.Migrations
                         {
                             Id = "69b38fdd-0aba-47f5-9f2b-6c7bb549d7ab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c05c9cd6-143e-4517-b429-50e2be73d11a",
+                            ConcurrencyStamp = "26e32390-428c-4af3-936b-59478f35fc54",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Great",
@@ -127,9 +130,9 @@ namespace FitnessApp.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKKw1oOYa4bK2OkwtO0YBXCwNSnuDfe7zRzVhOgfJ6eKuip69Kf0z2C4ElIPah00XA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO+3/CDQZPDAa6M9Vt+G7kdKoKxTc04zuSkib//FWJEfvOodrUSylKN1nMkqwJHoEQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6c472235-b7e0-4ce3-a3e7-69b3da12e680",
+                            SecurityStamp = "bd537afb-5528-42da-bb28-ebce407932b3",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         });
@@ -224,9 +227,6 @@ namespace FitnessApp.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
 
                     b.Property<int>("InstructorId")
                         .HasColumnType("int");
