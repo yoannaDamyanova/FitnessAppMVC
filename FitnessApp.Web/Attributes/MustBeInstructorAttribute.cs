@@ -6,21 +6,21 @@ using FitnessApp.Web.Controllers;
 
 namespace FitnessApp.Web.Attributes
 {
-    public class MustBeAgentAttribute : ActionFilterAttribute
+    public class MustBeInstructorAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
 
-            IInstructorService? agentService = context.HttpContext.RequestServices.GetService<IInstructorService>();
+            IInstructorService? intructorService = context.HttpContext.RequestServices.GetService<IInstructorService>();
 
-            if (agentService == null)
+            if (intructorService == null)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            if (agentService != null
-                && agentService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
+            if (intructorService != null
+                && intructorService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
             {
                 context.Result = new RedirectToActionResult(nameof(InstructorController.Become), "Agent", null);
             }

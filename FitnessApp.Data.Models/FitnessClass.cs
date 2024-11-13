@@ -27,11 +27,11 @@ namespace FitnessApp.Data.Models
         public DateTime StartTime { get; set; }
 
         [Required]
-        public TimeSpan Duration { get; set; }
+        public int Duration { get; set; }
 
         [Required]
-        [Range(MinCapacity, 100)]
-        public int MaxCapacity { get; set; }
+        [Range(MinCapacity, MaxCapacity)]
+        public int Capacity { get; set; }
 
         [Required]
         public Status Status { get; set; } = null!;
