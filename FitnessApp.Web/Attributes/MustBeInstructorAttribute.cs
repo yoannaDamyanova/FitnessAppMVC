@@ -22,7 +22,7 @@ namespace FitnessApp.Web.Attributes
             if (intructorService != null
                 && intructorService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
             {
-                context.Result = new RedirectToActionResult(nameof(InstructorController.Become), "Agent", null);
+                context.Result = new RedirectToActionResult(nameof(InstructorController.Become), "Instructor", null);
             }
         }
     }

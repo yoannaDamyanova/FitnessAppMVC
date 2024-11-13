@@ -1,8 +1,67 @@
-﻿@{
+﻿@using FitnessApp.Services.Data.Contracts
+@using FitnessApp.Web.ViewModels.FitnessClass
+@using static FitnessApp.Web.Extensions.ClaimsPrincipalExtensions;
+@model IEnumerable<FitnessClassIndexServiceModel>
+@inject IInstructorService instructorService
+
+@{
     ViewData["Title"] = "Home Page";
+    var fitnessClasses = Model.ToList();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (!fitnessClasses.Any())
+{
+    <div class="mt-4 p-5 bg-light">
+        <h1 class="display-4">Welcome to the best fitness class booking portal</h1>
+        <hr class="my-4">
+        <p class="lead">
+            @if (User?.Identity?.IsAuthenticated ?? false && await instructorService.ExistsByIdAsync(User.Id()))
+            {
+                <a asp-controller="FitnessClass" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add FitnessCLass</a>
+            }
+        </p>
+    </div>
+}
+else
+{
+    <p class="lead">
+        @if (User?.Identity?.IsAuthenticated ?? false && await instructorService.ExistsByIdAsync(User.Id()))
+        {
+            <a asp-controller="FitnessClass" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add FitnessCLass</a>
+        }
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Start Time</th>
+                <th>Instructor</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var fitnessClass in Model)
+            {
+                <tr>
+                    <td>@fitnessClass.Title</td>
+                    <td>@fitnessClass.Description</td>
+                    <td>@fitnessClass.Status</td>
+                    <td>@fitnessClass.StartTime</td>
+                    <td>@fitnessClass.InstructorName</td>
+                    <td>@fitnessClass.Duration</td>
+                    @if (User?.Identity?.IsAuthenticated ?? false && await instructorService.ExistsByIdAsync(User.Id()))
+                    {
+                        <td>
+                            <!-- Edit and Delete buttons for Instructor -->
+                            <a href="@Url.Action("Edit", "FitnessClass", new { id = fitnessClass.Id })" class="btn btn-primary">Edit</a>
+                            <a href="@Url.Action("Delete", "FitnessClass", new { id = fitnessClass.Id })" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this fitness class?')">Delete</a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

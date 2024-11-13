@@ -16,6 +16,7 @@ namespace FitnessApp.Web.Extensions
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<IInstructorService, InstructorService>();
             services.AddScoped<ILicenseGeneratorService, LicenseGeneratorService>();
+            services.AddScoped<IFitnessClassService, FitnessClassService>();
 
             return services;
         }
