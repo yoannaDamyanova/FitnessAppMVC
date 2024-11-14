@@ -5,12 +5,7 @@ using FitnessApp.Services.Data.Contracts;
 using FitnessApp.Web.ViewModels.Category;
 using FitnessApp.Web.ViewModels.FitnessClass;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace FitnessApp.Services.Data
 {
@@ -25,13 +20,17 @@ namespace FitnessApp.Services.Data
 
         public async Task<Guid> AddClassAsync(FitnessClassFormModel model, int instructorId)
         {
+            
+            bool tryParse = DateTime.TryParseExact(model.StartTime, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date);
+            
+
             FitnessClass fitnessClass = new FitnessClass()
             {
                 Title = model.Title,
                 InstructorId = instructorId,
                 CategoryId = model.CategoryId,
                 Description = model.Description,
-                StartTime = DateTime.Parse(model.StartTime),
+                StartTime = date,
                 Duration = model.Duration,
                 Capacity = model.Capacity,
                 Status = true
@@ -68,7 +67,7 @@ namespace FitnessApp.Services.Data
                 {
                     Id = fc.Id.ToString(),
                     Title = fc.Title,
-                    StartTime = fc.StartTime.ToString(),
+                    StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
                     Duration = fc.Duration.ToString(),
                     InstructorName = fc.Instructor.User.FirstName
                 })
