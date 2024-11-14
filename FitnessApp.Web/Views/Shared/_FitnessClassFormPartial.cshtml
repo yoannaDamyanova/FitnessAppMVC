@@ -1,6 +1,6 @@
 ﻿@model FitnessClassFormModel
 
-<form asp-action="Create" method="post">
+<form asp-action="Add" method="post">
     <div class="form-group">
         <label asp-for="Title" class="control-label"></label>
         <input asp-for="Title" class="form-control" />
@@ -15,7 +15,7 @@
 
     <div class="form-group">
         <label asp-for="StartTime" class="control-label"></label>
-        <input asp-for="StartTime" class="form-control" type="datetime-local" />
+        <input asp-for="StartTime" class="form-control"/>
         <span asp-validation-for="StartTime" class="text-danger"></span>
     </div>
 
@@ -23,6 +23,23 @@
         <label asp-for="Duration" class="control-label"></label>
         <input asp-for="Duration" class="form-control" type="number" step="any" />
         <span asp-validation-for="Duration" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Capacity" class="control-label"></label>
+        <input asp-for="Capacity" class="form-control" type="number" step="any" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId"></label>
+        <select asp-for="CategoryId" class="form-control">
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+        <span asp-validation-for="CategoryId" class="small text-danger"></span>
     </div>
 
     <div class="form-group">
