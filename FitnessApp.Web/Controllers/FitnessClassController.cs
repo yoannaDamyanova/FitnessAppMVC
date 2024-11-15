@@ -56,7 +56,7 @@ namespace FitnessApp.Web.Controllers
 
             Guid fitnessClassId = await fitnessService.AddClassAsync(model, instructorId ?? 0);
 
-            return RedirectToAction(nameof(HomeController.Index));
+            return RedirectToAction("Index", "Home");
         }
     }
 }

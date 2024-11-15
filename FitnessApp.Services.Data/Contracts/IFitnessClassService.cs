@@ -1,4 +1,6 @@
-﻿using FitnessApp.Web.ViewModels.Category;
+﻿using FitnessApp.Data.Models;
+using FitnessApp.Services.Data.Enumerators;
+using FitnessApp.Web.ViewModels.Category;
 using FitnessApp.Web.ViewModels.FitnessClass;
 using System;
 using System.Collections.Generic;
@@ -18,32 +20,30 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<Guid> AddClassAsync(FitnessClassFormModel model, int instructorId);
 
-        //Task<HouseQueryServiceModel> AllAsync(
-        //    string? category = null,
-        //    string? searchTerm = null,
-        //    HouseSorting sorting = HouseSorting.Newest,
-        //    int currentPage = 1,
-        //    int housesPerPage = 1);
+        Task<FitnessClassQueryServiceModel> AllAsync(
+            string? category = null,
+            string? searchTerm = null,
+            FitnessClassSorting sorting = FitnessClassSorting.Newest,
+            int currentPage = 1,
+            int housesPerPage = 1);
 
-        //Task<IEnumerable<string>> AllCategoriesNamesAsync();
+        Task<IEnumerable<string>> AllCategoriesNamesAsync();
 
-        //Task<IEnumerable<HouseServiceModel>> AllHousesByAgentIdAsync(int agentId);
+        Task<IEnumerable<FitnessClassServiceModel>> AllFitnessClassesByInstructorIdAsync(int agentId);
 
-        //Task<IEnumerable<HouseServiceModel>> AllHousesByUserId(string userId);
+        Task<IEnumerable<FitnessClassServiceModel>> AllBookedByUserId(string userId);
 
-        //Task<bool> ExistsAsync(int id);
+        Task<bool> ExistsAsync(string id);
 
         //Task<HouseDetailsServiceModel> HouseDetailsByIdAsync(int id);
 
         //Task EditAsync(int houseId, HouseFormModel model);
 
-        //Task<bool> HasAgentWithIdAsync(int houseId, string userId);
+        Task<bool> HasInstructorWithIdAsync(int fitnessClassId, string userId);
 
-        //Task<HouseFormModel?> GetHouseFormModelByIdAsync(int id);
+        Task<FitnessClassFormModel?> GetFitnessClassFormModelByIdAsync(string id);
 
         //Task DeleteAsync(int houseId);
-
-        //Task<bool> IsRentedAsync(int houseId);
 
         //Task<bool> IsRentedByIUserWithIdAsync(int houseId, string userId);
 

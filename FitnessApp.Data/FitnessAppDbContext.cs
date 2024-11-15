@@ -35,8 +35,6 @@ namespace FitnessApp.Data
 
         public virtual DbSet<Review> Reviews { get; set; } = null!;
 
-        public virtual DbSet<Status> Statuses { get; set; } = null!;
-
         public virtual DbSet<Instructor> Instructors { get; set; } 
     }
 }
