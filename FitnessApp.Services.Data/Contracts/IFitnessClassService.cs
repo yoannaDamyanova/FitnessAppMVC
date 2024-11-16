@@ -29,27 +29,27 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<IEnumerable<string>> AllCategoriesNamesAsync();
 
-        Task<IEnumerable<FitnessClassServiceModel>> AllFitnessClassesByInstructorIdAsync(int agentId);
+        Task<IEnumerable<FitnessClassServiceModel>> AllFitnessClassesByInstructorIdAsync(int instructorId);
 
         Task<IEnumerable<FitnessClassServiceModel>> AllBookedByUserId(string userId);
 
         Task<bool> ExistsAsync(string id);
 
-        //Task<HouseDetailsServiceModel> HouseDetailsByIdAsync(int id);
+        Task<FitnessClassDetailsServiceModel> FitnessClassDetailsByIdAsync(string id);
 
-        //Task EditAsync(int houseId, HouseFormModel model);
+        Task EditAsync(string houseId, FitnessClassFormModel model);
 
         Task<bool> HasInstructorWithIdAsync(int fitnessClassId, string userId);
 
         Task<FitnessClassFormModel?> GetFitnessClassFormModelByIdAsync(string id);
 
-        //Task DeleteAsync(int houseId);
+        Task DeleteAsync(string houseId);
 
         //Task<bool> IsRentedByIUserWithIdAsync(int houseId, string userId);
 
-        //Task RentAsync(int id, string userId);
+        Task BookAsync(string id, string userId);
 
-        //Task LeaveAsync(int houseId, string userId);
+        Task UnBookAsync(string fitnessClassId, string userId);
 
         //Task<IEnumerable<HouseServiceModel>> GetUnApprovedAsync();
 

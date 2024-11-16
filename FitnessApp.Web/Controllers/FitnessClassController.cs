@@ -3,6 +3,7 @@ using FitnessApp.Services.Data.Contracts;
 using FitnessApp.Web.Attributes;
 using FitnessApp.Web.Extensions;
 using FitnessApp.Web.ViewModels.FitnessClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessApp.Web.Controllers
@@ -57,6 +58,96 @@ namespace FitnessApp.Web.Controllers
             Guid fitnessClassId = await fitnessService.AddClassAsync(model, instructorId ?? 0);
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> All([FromQuery] AllFitnessClassQueryModel model)
+        {
+            var classes = await fitnessService.AllAsync(
+                model.Category,
+                model.SearchTerm,
+                model.Sorting,
+                model.CurrentPage,
+                model.FitnessClassesPerPage);
+
+            model.TotalFitnessClassesCount = classes.TotalFitnessClassCount;
+
+            model.FitnessClasses = classes.FitnessClasses;
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Booked()
+        {
+            var userId = User.Id();
+            IEnumerable<FitnessClassServiceModel> model;
+
+            if (User.IsAdmin())
+            {
+                return RedirectToAction("Booked", "FitnessClass", new { area = "Admin" });
+            }
+
+            model = await fitnessService.AllBookedByUserId(userId);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MyClasses()
+        {
+            var userId = User.Id();
+            IEnumerable<FitnessClassServiceModel> model;
+
+            if (await instructorService.ExistsByIdAsync(userId) == false)
+            {
+                return Unauthorized();
+            }
+
+            int instructorId = await instructorService.GetInstructorByIdAsync(userId) ?? 0;
+
+            model = await fitnessService.AllFitnessClassesByInstructorIdAsync(instructorId);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Book(string fitnessClassId)
+        {
+            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            {
+                return BadRequest();
+            }
+
+            if (await instructorService.ExistsByIdAsync(User.Id()) && User.IsAdmin() == false)
+            {
+                return Unauthorized();
+            }
+
+            await fitnessService.BookAsync(fitnessClassId, User.Id());
+
+            return RedirectToAction(nameof(All));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnBook(string fitnessClassId)
+        {
+            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await fitnessService.UnBookAsync(fitnessClassId, User.Id());
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                return Unauthorized();
+            }
+
+            return RedirectToAction(nameof(All));
         }
     }
 }

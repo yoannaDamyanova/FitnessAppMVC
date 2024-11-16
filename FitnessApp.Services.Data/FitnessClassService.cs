@@ -97,22 +97,26 @@ namespace FitnessApp.Services.Data
 
         public async Task<IEnumerable<FitnessClassServiceModel>> AllBookedByUserId(string userId)
         {
-            var bookings = await repository.AllReadOnly<Booking>()
-                .Where(b => b.UserId == userId)
-                .ToListAsync();
+            var user = await repository.GetByIdAsync<ApplicationUser>(userId);
 
-            return await repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.Bookings == bookings)
-                .Select(c => new FitnessClassServiceModel
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("No such user exists!");
+            }
+            var bookedFitnessClasses = user.Bookings.Select(b => b.FitnessClass).ToList();
+
+            return bookedFitnessClasses
+                .Select(bfc => new FitnessClassServiceModel
                 {
-                    Id = c.Id.ToString(),
-                    Duration = c.Duration,
-                    Capacity = c.Capacity,
-                    IsActive = c.Status,
-                    InstructorFirstName = c.Instructor.User.FirstName,
-                    InstructorLastName = c.Instructor.User.LastName,
-                    StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm")
-                }).ToListAsync();
+                    Id = bfc.Id.ToString(),
+                    Duration = bfc.Duration,
+                    Capacity = bfc.Capacity,
+                    IsActive = bfc.Status,
+                    InstructorFirstName = bfc.Instructor.User.FirstName,
+                    InstructorLastName = bfc.Instructor.User.LastName,
+                    StartTime = bfc.StartTime.ToString("dd/MM/yyyy HH:mm")
+                })
+                .ToList();
         }
 
         public async Task<IEnumerable<FitnessClassCategoryServiceModel>> AllCategoriesAsync()
@@ -150,10 +154,49 @@ namespace FitnessApp.Services.Data
                 }).ToListAsync();
         }
 
+        public async Task BookAsync(string id, string userId)
+        {
+            var fitnessClass = await repository.GetByIdAsync<FitnessClass>(id);
+
+            if (fitnessClass != null)
+            {
+                fitnessClass.Bookings.Add(new Booking
+                {
+                    UserId = userId,
+                    FitnessClassId = fitnessClass.Id,
+                });
+                await repository.SaveChangesAsync();
+            }
+        }
+
         public async Task<bool> CategoryExistsAsync(int categoryId)
         {
             return await repository.AllReadOnly<Category>()
                 .AnyAsync(c => c.Id == categoryId);
+        }
+
+        public async Task DeleteAsync(string fitnessClassId)
+        {
+            await repository.DeleteAsync<FitnessClass>(fitnessClassId);
+            await repository.SaveChangesAsync();
+        }
+
+        public async Task EditAsync(string fitnessClassId, FitnessClassFormModel model)
+        {
+            var fitnessClass = await repository.GetByIdAsync<FitnessClass>(fitnessClassId);
+
+            bool dateTime = DateTime.TryParseExact(model.StartTime, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date);
+
+            if (fitnessClass != null)
+            {
+                fitnessClass.Capacity = model.Capacity;
+                fitnessClass.Description = model.Description;
+                fitnessClass.Duration = model.Duration;
+                fitnessClass.CategoryId = model.CategoryId;
+                fitnessClass.StartTime = date;
+            }
+
+            await repository.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsAsync(string id)
@@ -162,11 +205,31 @@ namespace FitnessApp.Services.Data
                 .AnyAsync(fc => fc.Id.ToString() == id);
         }
 
+        public async Task<FitnessClassDetailsServiceModel> FitnessClassDetailsByIdAsync(string id)
+        {
+            return await repository.AllReadOnly<FitnessClass>()
+                .Where(fc => fc.Id.ToString() == id)
+                .Select(fc => new FitnessClassDetailsServiceModel
+                {
+                    Id = fc.Id.ToString(),
+                    Duration = fc.Duration,
+                    Capacity = fc.Capacity,
+                    IsActive = fc.Status,
+                    Description = fc.Description,
+                    Category = fc.Category.Name,
+                    Title = fc.Title,
+                    StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
+                    InstructorFirstName = fc.Instructor.User.FirstName,
+                    InstructorLastName = fc.Instructor.User.LastName,
+                })
+                .FirstAsync();
+        }
+
         public async Task<FitnessClassFormModel?> GetFitnessClassFormModelByIdAsync(string id)
         {
             return await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Id.ToString() == id)
-                .Select(fc=> new FitnessClassFormModel()
+                .Select(fc => new FitnessClassFormModel()
                 {
                     Title = fc.Title,
                     Description = fc.Description,
@@ -181,7 +244,7 @@ namespace FitnessApp.Services.Data
         public async Task<bool> HasInstructorWithIdAsync(int fitnessClassId, string userId)
         {
             return await repository.AllReadOnly<FitnessClass>()
-                .AnyAsync(fc=> fc.Instructor.UserId == userId);
+                .AnyAsync(fc => fc.Instructor.UserId == userId);
         }
 
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
@@ -198,6 +261,24 @@ namespace FitnessApp.Services.Data
                     InstructorName = fc.Instructor.User.FirstName
                 })
                 .ToListAsync();
+        }
+
+        public async Task UnBookAsync(string fitnessClassId, string userId)
+        {
+            var fitnessClass = await repository.GetByIdAsync<FitnessClass>(fitnessClassId);
+
+            var booking = await repository.GetByIdAsync<Booking>(userId);
+
+            if (fitnessClass != null)
+            {
+                if (booking == null)
+                {
+                    throw new UnauthorizedAccessException("This user has not booked this class");
+                }
+
+                fitnessClass.Bookings.Remove(booking);
+                await repository.SaveChangesAsync();
+            }
         }
     }
 }

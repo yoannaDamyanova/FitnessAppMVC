@@ -19,5 +19,6 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
         public string InstructorName { get; set; }
 
         public string Duration { get; set; }
+        public bool IsActive { get ; set ; }
     }
 }
