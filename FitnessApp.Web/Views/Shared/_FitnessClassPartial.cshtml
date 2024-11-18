@@ -41,7 +41,7 @@
                 {
                     <form class="input-group-sm" asp-controller="FitnessClass"
                           asp-area="" asp-action="Book" asp-route-id="@Model.Id" method="post">
-                        <input class="btn btn-primary" type="submit" value="Rent" />
+                        <input class="btn btn-primary" type="submit" value="Book" />
                     </form>
                 }
                 else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()))
