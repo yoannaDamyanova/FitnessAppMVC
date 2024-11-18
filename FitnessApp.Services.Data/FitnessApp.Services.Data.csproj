@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FitnessApp.Data.Models\FitnessApp.Data.Models.csproj" />
     <ProjectReference Include="..\FitnessApp.Data\FitnessApp.Data.csproj" />
     <ProjectReference Include="..\FitnessApp.Web.ViewModels\FitnessApp.Web.ViewModels.csproj" />

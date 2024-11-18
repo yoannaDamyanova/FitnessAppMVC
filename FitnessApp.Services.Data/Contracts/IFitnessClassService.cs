@@ -1,5 +1,5 @@
 ﻿using FitnessApp.Data.Models;
-using FitnessApp.Services.Data.Enumerators;
+using FitnessApp.Web.Infrastructure.Enumerations;
 using FitnessApp.Web.ViewModels.Category;
 using FitnessApp.Web.ViewModels.FitnessClass;
 using System;

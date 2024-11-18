@@ -1,5 +1,4 @@
-﻿
-using FitnessApp.Services.Data.Contracts;
+﻿using FitnessApp.Services.Data.Contracts;
 using FitnessApp.Web.Attributes;
 using FitnessApp.Web.Extensions;
 using FitnessApp.Web.ViewModels.FitnessClass;
@@ -71,7 +70,7 @@ namespace FitnessApp.Web.Controllers
                 model.CurrentPage,
                 model.FitnessClassesPerPage);
 
-            model.TotalFitnessClassesCount = classes.TotalFitnessClassCount;
+            model.TotalFitnessClassesCount = classes.TotalClassesCount;
 
             model.FitnessClasses = classes.FitnessClasses;
 

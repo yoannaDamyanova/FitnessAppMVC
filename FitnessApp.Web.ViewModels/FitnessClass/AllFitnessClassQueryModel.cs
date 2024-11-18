@@ -1,6 +1,4 @@
-﻿//using FitnessApp.Services.Data.Enumerators;
-
-using FitnessApp.Services.Data.Enumerators;
+﻿using FitnessApp.Web.Infrastructure.Enumerations;
 
 namespace FitnessApp.Web.ViewModels.FitnessClass
 {
