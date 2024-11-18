@@ -10,7 +10,8 @@ namespace FitnessApp.Web.Infrastructure.Enumerations
     {
         Newest = 0,
         Active = 1,
-        Duration = 2,
-        StartTime = 3
+        Canceled= 2,
+        Duration = 3,
+        StartTime = 4
     }
 }

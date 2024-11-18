@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FitnessApp.Web.ViewModels.Attributes
 {
@@ -24,12 +19,11 @@ namespace FitnessApp.Web.ViewModels.Attributes
             DateTime date;
             if (DateTime.TryParseExact(dateValue, _format, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
             {
+                if (date <= DateTime.Now)
+                {
+                    return new ValidationResult("Plese enter a present date and time.");
+                }
                 return ValidationResult.Success;
-            }
-
-            if (date <= DateTime.Now)
-            {
-                return new ValidationResult("Plese enter a present date and time.");
             }
 
             return new ValidationResult($"The date must be in the format {_format}.");

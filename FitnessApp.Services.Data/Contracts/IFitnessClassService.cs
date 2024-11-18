@@ -39,13 +39,13 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task EditAsync(string houseId, FitnessClassFormModel model);
 
-        Task<bool> HasInstructorWithIdAsync(int fitnessClassId, string userId);
+        Task<bool> HasInstructorWithIdAsync(string fitnessClassId, string userId);
 
         Task<FitnessClassFormModel?> GetFitnessClassFormModelByIdAsync(string id);
 
         Task DeleteAsync(string houseId);
 
-        //Task<bool> IsRentedByIUserWithIdAsync(int houseId, string userId);
+        Task<bool> IsBookedByIUserWithIdAsync(string fitnessClassId, string userId);
 
         Task BookAsync(string id, string userId);
 

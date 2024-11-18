@@ -66,9 +66,10 @@ namespace FitnessApp.Services.Data
 
             classesToShow = sorting switch
             {
+                FitnessClassSorting.Active => (IQueryable<FitnessClass>)classesToShow.Select(c => c.Status == true),
+                FitnessClassSorting.Canceled => (IQueryable<FitnessClass>)classesToShow.Select(c => c.Status == false),
                 FitnessClassSorting.Duration => classesToShow.OrderBy(c => c.Duration),
                 FitnessClassSorting.StartTime => classesToShow.OrderBy(c => c.StartTime),
-                FitnessClassSorting.Active => classesToShow.OrderBy(c => c.Status == true), //?
                 _ => classesToShow.OrderByDescending(c => c.Id),
             };
 
@@ -78,6 +79,7 @@ namespace FitnessApp.Services.Data
                 .Select(c => new FitnessClassServiceModel
                 {
                     Id = c.Id.ToString(),
+                    Title = c.Title,
                     Duration = c.Duration,
                     Capacity = c.Capacity,
                     IsActive = c.Status,
@@ -141,16 +143,17 @@ namespace FitnessApp.Services.Data
         public async Task<IEnumerable<FitnessClassServiceModel>> AllFitnessClassesByInstructorIdAsync(int instructorId)
         {
             return await repository.AllReadOnly<FitnessClass>()
-                .Where(c => c.InstructorId == instructorId)
-                .Select(c => new FitnessClassServiceModel
+                .Where(fc => fc.InstructorId == instructorId)
+                .Select(fc => new FitnessClassServiceModel
                 {
-                    Id = c.Id.ToString(),
-                    Duration = c.Duration,
-                    Capacity = c.Capacity,
-                    IsActive = c.Status,
-                    InstructorFirstName = c.Instructor.User.FirstName,
-                    InstructorLastName = c.Instructor.User.LastName,
-                    StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm")
+                    Id = fc.Id.ToString(),
+                    Title = fc.Title,
+                    Duration = fc.Duration,
+                    Capacity = fc.Capacity,
+                    IsActive = fc.Status,
+                    InstructorFirstName = fc.Instructor.User.FirstName,
+                    InstructorLastName = fc.Instructor.User.LastName,
+                    StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
                 }).ToListAsync();
         }
 
@@ -241,10 +244,17 @@ namespace FitnessApp.Services.Data
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> HasInstructorWithIdAsync(int fitnessClassId, string userId)
+        public async Task<bool> HasInstructorWithIdAsync(string fitnessClassId, string userId)
         {
             return await repository.AllReadOnly<FitnessClass>()
                 .AnyAsync(fc => fc.Instructor.UserId == userId);
+        }
+
+        public async Task<bool> IsBookedByIUserWithIdAsync(string fitnessClassId, string userId)
+        {
+            var user = await repository.AllReadOnly<ApplicationUser>()
+                .FirstOrDefaultAsync(a => a.Id == userId);
+            return user.Bookings.Any(b => b.FitnessClassId.ToString() == fitnessClassId);
         }
 
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
