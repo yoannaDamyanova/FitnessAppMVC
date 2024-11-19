@@ -1,0 +1,16 @@
+﻿@model FitnessClassDeleteViewModel
+
+@{
+    ViewData["Title"] = "Delete Fitness class";
+}
+
+<form asp-action="Delete">
+    <h3>Are you sure you want to delete this class?</h3>
+    <p class="mb-3">Title: <b>@Model.Title</b></p>
+    <p class ="mb-3">Category: <b>@Model.CategoryName</b></p>
+    <p class="mb-3">StartTime: <b>@Model.StartTime</b></p>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Delete</button>
+    </div>
+</form>

@@ -15,7 +15,8 @@
         <h1 class="display-4">Welcome to the best fitness class booking portal</h1>
         <hr class="my-4">
         <p class="lead">
-            @if (User?.Identity?.IsAuthenticated ?? false && await instructorService.ExistsByIdAsync(User.Id()))
+
+            @if (User?.Identity?.IsAuthenticated == true && await instructorService.ExistsByIdAsync(User.Id()))
             {
                 <a asp-controller="FitnessClass" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add FitnessCLass</a>
             }
@@ -25,7 +26,7 @@
 else
 {
     <p class="lead">
-        @if (User?.Identity?.IsAuthenticated ?? false && await instructorService.ExistsByIdAsync(User.Id()))
+        @if (User?.Identity?.IsAuthenticated == true && await instructorService.ExistsByIdAsync(User.Id()))
         {
             <a asp-controller="FitnessClass" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add FitnessCLass</a>
         }
@@ -50,12 +51,11 @@ else
                     <td>@fitnessClass.StartTime</td>
                     <td>@fitnessClass.InstructorName</td>
                     <td>@fitnessClass.Duration</td>
-                    @if (User?.Identity?.IsAuthenticated ?? false && await instructorService.ExistsByIdAsync(User.Id()))
+                    @if (User?.Identity?.IsAuthenticated == true && await instructorService.ExistsByIdAsync(User.Id()))
                     {
                         <td>
-                            <!-- Edit and Delete buttons for Instructor -->
-                            <a href="@Url.Action("Edit", "FitnessClass", new { id = fitnessClass.Id })" class="btn btn-primary">Edit</a>
-                            <a href="@Url.Action("Delete", "FitnessClass", new { id = fitnessClass.Id })" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this fitness class?')">Delete</a>
+                            <a asp-controller="FitnessClass" asp-action="Edit" asp-route-id="@fitnessClass.Id" class="btn btn-primary">Edit</a>
+                            <a asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-danger">Delete</a>
                         </td>
                     }
                 </tr>

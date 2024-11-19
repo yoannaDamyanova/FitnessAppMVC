@@ -35,8 +35,7 @@ namespace FitnessApp.Services.Data
 
         public async Task<bool> ExistsByIdAsync(string userId)
         {
-            return await repository.AllReadOnly<Instructor>()
-                .AnyAsync(i => i.UserId == userId); 
+            return await repository.AllReadOnly<Instructor>().AnyAsync(i => i.UserId == userId);
         }
 
         public async Task<int?> GetInstructorByIdAsync(string userId)

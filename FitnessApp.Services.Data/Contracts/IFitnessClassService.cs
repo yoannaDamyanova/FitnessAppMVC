@@ -43,7 +43,7 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<FitnessClassFormModel?> GetFitnessClassFormModelByIdAsync(string id);
 
-        Task DeleteAsync(string houseId);
+        Task DeleteAsync(string fitnessClassId);
 
         Task<bool> IsBookedByIUserWithIdAsync(string fitnessClassId, string userId);
 
@@ -54,5 +54,7 @@ namespace FitnessApp.Services.Data.Contracts
         //Task<IEnumerable<HouseServiceModel>> GetUnApprovedAsync();
 
         //Task ApproveHouseAsync(int houseId);
+
+        Task<FitnessClass> GetByIdAsync(string fitnessClassId);
     }
 }

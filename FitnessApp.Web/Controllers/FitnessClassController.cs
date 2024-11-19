@@ -1,4 +1,5 @@
-﻿using FitnessApp.Services.Data.Contracts;
+﻿using FitnessApp.Data.Repository;
+using FitnessApp.Services.Data.Contracts;
 using FitnessApp.Web.Attributes;
 using FitnessApp.Web.Extensions;
 using FitnessApp.Web.ViewModels.FitnessClass;
@@ -149,6 +150,33 @@ namespace FitnessApp.Web.Controllers
             }
 
             return RedirectToAction(nameof(All));
+        }
+
+        [HttpGet]
+        [MustBeInstructor]
+        public async Task<IActionResult> Delete(string fitnessClassId)
+        {
+            var fitnessClass = await fitnessService.GetByIdAsync(fitnessClassId);
+            var categories = await fitnessService.AllCategoriesAsync();
+            var category = categories.FirstOrDefault(c => c.Id == fitnessClass.CategoryId);
+
+            var model = new FitnessClassDeleteViewModel
+            {
+                Id = fitnessClassId.ToString(),
+                Title = fitnessClass.Title,
+                CategoryName = category.Name,
+                StartTime = fitnessClass.StartTime.ToString("dd/MM/yyyy HH:mm")
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Delete(FitnessClassDeleteViewModel model)
+        {
+            await fitnessService.DeleteAsync(model.Id);
+            return RedirectToAction(nameof(HomeController.Index));
         }
     }
 }

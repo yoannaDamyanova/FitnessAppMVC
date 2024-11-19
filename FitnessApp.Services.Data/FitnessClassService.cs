@@ -6,6 +6,7 @@ using FitnessApp.Web.ViewModels.FitnessClass;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using FitnessApp.Web.Infrastructure.Enumerations;
+using Azure.Core;
 
 namespace FitnessApp.Services.Data
 {
@@ -160,14 +161,24 @@ namespace FitnessApp.Services.Data
         public async Task BookAsync(string id, string userId)
         {
             var fitnessClass = await repository.GetByIdAsync<FitnessClass>(id);
+            var user = await repository.GetByIdAsync<ApplicationUser>(userId);
 
-            if (fitnessClass != null)
+            if (fitnessClass != null && user != null)
             {
-                fitnessClass.Bookings.Add(new Booking
+                fitnessClass.Capacity--;
+
+                Booking booking = new()
                 {
                     UserId = userId,
                     FitnessClassId = fitnessClass.Id,
-                });
+                    FitnessClass = fitnessClass,
+                    User = user
+                };
+
+                fitnessClass.Bookings.Add(booking);
+
+                user.Bookings.Add(booking);
+
                 await repository.SaveChangesAsync();
             }
         }
@@ -228,6 +239,11 @@ namespace FitnessApp.Services.Data
                 .FirstAsync();
         }
 
+        public async Task<FitnessClass> GetByIdAsync(string fitnessClassId)
+        {
+            return await repository.GetByIdAsync<FitnessClass>(Guid.Parse(fitnessClassId));
+        }
+
         public async Task<FitnessClassFormModel?> GetFitnessClassFormModelByIdAsync(string id)
         {
             return await repository.AllReadOnly<FitnessClass>()
@@ -259,7 +275,7 @@ namespace FitnessApp.Services.Data
 
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
         {
-            return await repository.AllReadOnly<FitnessClass>()
+            var classes= await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Status == true && fc.Capacity > 0)
                 .Take(5)
                 .Select(fc => new FitnessClassIndexServiceModel()
@@ -271,6 +287,8 @@ namespace FitnessApp.Services.Data
                     InstructorName = fc.Instructor.User.FirstName
                 })
                 .ToListAsync();
+
+            return classes;
         }
 
         public async Task UnBookAsync(string fitnessClassId, string userId)
@@ -279,13 +297,18 @@ namespace FitnessApp.Services.Data
 
             var booking = await repository.GetByIdAsync<Booking>(userId);
 
-            if (fitnessClass != null)
+            var user = await repository.GetByIdAsync<ApplicationUser>(userId);
+
+            if (fitnessClass != null && user != null)
             {
                 if (booking == null)
                 {
                     throw new UnauthorizedAccessException("This user has not booked this class");
                 }
 
+                fitnessClass.Capacity++;
+
+                user.Bookings.Remove(booking);
                 fitnessClass.Bookings.Remove(booking);
                 await repository.SaveChangesAsync();
             }
