@@ -178,5 +178,21 @@ namespace FitnessApp.Web.Controllers
             await fitnessService.DeleteAsync(model.Id);
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        [MustBeInstructor]
+        public async Task<IActionResult> Edit(string fitnessClassId)
+        {
+            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            {
+                return BadRequest();
+            }
+
+            var model = await fitnessService.GetFitnessClassFormModelByIdAsync(fitnessClassId);
+
+            model.Categories = await fitnessService.AllCategoriesAsync();
+
+            return View(model);
+        }
     }
 }

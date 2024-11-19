@@ -215,8 +215,12 @@ namespace FitnessApp.Services.Data
 
         public async Task<bool> ExistsAsync(string id)
         {
-            return await repository.AllReadOnly<FitnessClass>()
-                .AnyAsync(fc => fc.Id.ToString() == id);
+            Guid fitnessClassId = Guid.Parse(id);
+
+            bool reuslt = await repository.AllReadOnly<FitnessClass>()
+                .AnyAsync(fc => fc.Id == fitnessClassId);
+
+            return reuslt;
         }
 
         public async Task<FitnessClassDetailsServiceModel> FitnessClassDetailsByIdAsync(string id)

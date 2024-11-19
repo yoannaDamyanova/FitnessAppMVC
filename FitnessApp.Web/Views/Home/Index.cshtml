@@ -54,7 +54,7 @@ else
                     @if (User?.Identity?.IsAuthenticated == true && await instructorService.ExistsByIdAsync(User.Id()))
                     {
                         <td>
-                            <a asp-controller="FitnessClass" asp-action="Edit" asp-route-id="@fitnessClass.Id" class="btn btn-primary">Edit</a>
+                            <a asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-primary">Edit</a>
                             <a asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-danger">Delete</a>
                         </td>
                     }
