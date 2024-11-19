@@ -11,6 +11,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
     public class FitnessClassDeleteViewModel
     {
         public string Id { get; set; } = null!;
+
         public string Title { get; set; } = null!;
 
         public string CategoryName { get; set; } = null!;

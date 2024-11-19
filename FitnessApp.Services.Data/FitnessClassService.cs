@@ -191,7 +191,7 @@ namespace FitnessApp.Services.Data
 
         public async Task DeleteAsync(string fitnessClassId)
         {
-            await repository.DeleteAsync<FitnessClass>(fitnessClassId);
+            await repository.DeleteAsync<FitnessClass>(Guid.Parse(fitnessClassId));
             await repository.SaveChangesAsync();
         }
 

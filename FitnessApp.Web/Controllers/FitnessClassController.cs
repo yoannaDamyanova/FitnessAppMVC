@@ -176,7 +176,7 @@ namespace FitnessApp.Web.Controllers
         public async Task<IActionResult> Delete(FitnessClassDeleteViewModel model)
         {
             await fitnessService.DeleteAsync(model.Id);
-            return RedirectToAction(nameof(HomeController.Index));
+            return RedirectToAction("Index", "Home");
         }
     }
 }
