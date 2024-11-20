@@ -29,7 +29,7 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<IEnumerable<string>> AllCategoriesNamesAsync();
 
-        Task<IEnumerable<FitnessClassServiceModel>> AllFitnessClassesByInstructorIdAsync(int instructorId);
+        Task<IEnumerable<FitnessClassInstructorViewModel>> AllFitnessClassesByInstructorIdAsync(int instructorId);
 
         Task<IEnumerable<FitnessClassServiceModel>> AllBookedByUserId(string userId);
 

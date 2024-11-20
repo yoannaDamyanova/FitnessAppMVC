@@ -3,6 +3,7 @@ using FitnessApp.Services.Data.Contracts;
 using FitnessApp.Web.Attributes;
 using FitnessApp.Web.Extensions;
 using FitnessApp.Web.ViewModels.FitnessClass;
+using FitnessApp.Web.ViewModels.Instructor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static FitnessApp.Web.ViewModels.FitnessClass.Extensions.ModelExtensions;
@@ -101,7 +102,7 @@ namespace FitnessApp.Web.Controllers
         public async Task<IActionResult> MyClasses()
         {
             var userId = User.Id();
-            IEnumerable<FitnessClassServiceModel> model;
+            IEnumerable<FitnessClassInstructorViewModel> model;
 
             if (await instructorService.ExistsByIdAsync(userId) == false)
             {
@@ -112,7 +113,14 @@ namespace FitnessApp.Web.Controllers
 
             model = await fitnessService.AllFitnessClassesByInstructorIdAsync(instructorId);
 
-            return View(model);
+            var instructorModel = new MyClassesInstructorViewModel
+            {
+                Classes = model,
+                TotalClassesCount = model.Count(),
+                Rating = await instructorService.GetRatingByIdAsync(userId.ToString()),
+            };
+
+            return View(instructorModel);
         }
 
         [HttpPost]

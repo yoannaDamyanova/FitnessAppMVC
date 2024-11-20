@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject IInstructorService instructorService
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -27,6 +28,14 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="All">All Fitness classes</a>
                             </li>
+                            @if (await instructorService.ExistsByIdAsync(User.Id()) == true)
+                            {
+                                <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="MyClasses">My Fitness classes</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="BookedClasses">My Booked Fitness classes</a>
+                            }
                         }                             
                     </ul>
                     <partial name="_LoginPartial" />

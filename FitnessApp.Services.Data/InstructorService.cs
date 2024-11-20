@@ -64,7 +64,15 @@ namespace FitnessApp.Services.Data
 
         public bool UserWithLicenseNumberExistsGlobally(int licenseNumber)
         {
-            return  LoadLicenseNumbers().Any(ln => ln == licenseNumber);
+            return LoadLicenseNumbers().Any(ln => ln == licenseNumber);
+        }
+
+        public async Task<double> GetRatingByIdAsync(string userId)
+        {
+            var instructor = await repository.AllReadOnly<Instructor>()
+                .FirstOrDefaultAsync(i => i.UserId == userId);
+
+            return instructor?.Rating ?? 0;
         }
     }
 }

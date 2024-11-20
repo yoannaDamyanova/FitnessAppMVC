@@ -19,5 +19,7 @@ namespace FitnessApp.Services.Data.Contracts
         bool UserWithLicenseNumberExistsGlobally(int licenseNumber);
 
         Task<bool> IsLicenseNumberValidAsync(int licenseNumber);
+
+        Task<double> GetRatingByIdAsync(string userId);
     }
 }

@@ -34,6 +34,9 @@ namespace FitnessApp.Data.Models
         public int Capacity { get; set; }
 
         [Required]
+        public int LeftCapacity { get; set; }
+
+        [Required]
         public bool Status { get; set; } 
 
         // Navigation properties
@@ -43,8 +46,6 @@ namespace FitnessApp.Data.Models
 
         [Required]
         public virtual Category Category { get; set; } = null!;
-
-        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
