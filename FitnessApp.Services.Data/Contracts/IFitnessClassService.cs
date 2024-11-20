@@ -37,7 +37,7 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<FitnessClassDetailsServiceModel> FitnessClassDetailsByIdAsync(string id);
 
-        Task EditAsync(string houseId, FitnessClassFormModel model);
+        Task EditAsync(FitnessClassFormModel model);
 
         Task<bool> HasInstructorWithIdAsync(string fitnessClassId, string userId);
 

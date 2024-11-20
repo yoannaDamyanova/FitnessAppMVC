@@ -30,7 +30,6 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
         [DateTimeFormat(DateFormat)]
         public string StartTime { get; set; } = string.Empty;
 
-        public string InstructorFirstName { get; set; } = string.Empty;
-        public string InstructorLastName { get; set; } = string.Empty;
+        public string InstructorFullName { get; set; } = string.Empty;
     }
 }

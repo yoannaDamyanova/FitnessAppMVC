@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using FitnessApp.Web.Infrastructure.Enumerations;
 using Azure.Core;
+using FitnessApp.Web.ViewModels.Instructor;
 
 namespace FitnessApp.Services.Data
 {
@@ -84,8 +85,7 @@ namespace FitnessApp.Services.Data
                     Duration = c.Duration,
                     Capacity = c.Capacity,
                     IsActive = c.Status,
-                    InstructorFirstName = c.Instructor.User.FirstName,
-                    InstructorLastName = c.Instructor.User.LastName,
+                    InstructorFullName = c.Instructor.User.FirstName + " " + c.Instructor.User.LastName,
                     StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm")
                 }).ToListAsync();
 
@@ -115,8 +115,7 @@ namespace FitnessApp.Services.Data
                     Duration = bfc.Duration,
                     Capacity = bfc.Capacity,
                     IsActive = bfc.Status,
-                    InstructorFirstName = bfc.Instructor.User.FirstName,
-                    InstructorLastName = bfc.Instructor.User.LastName,
+                    InstructorFullName = bfc.Instructor.User.FirstName + " " + bfc.Instructor.User.LastName,
                     StartTime = bfc.StartTime.ToString("dd/MM/yyyy HH:mm")
                 })
                 .ToList();
@@ -152,8 +151,7 @@ namespace FitnessApp.Services.Data
                     Duration = fc.Duration,
                     Capacity = fc.Capacity,
                     IsActive = fc.Status,
-                    InstructorFirstName = fc.Instructor.User.FirstName,
-                    InstructorLastName = fc.Instructor.User.LastName,
+                    InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName,
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
                 }).ToListAsync();
         }
@@ -195,14 +193,16 @@ namespace FitnessApp.Services.Data
             await repository.SaveChangesAsync();
         }
 
-        public async Task EditAsync(string fitnessClassId, FitnessClassFormModel model)
+        public async Task EditAsync(FitnessClassFormModel model)
         {
+            var fitnessClassId = Guid.Parse(model.Id);
             var fitnessClass = await repository.GetByIdAsync<FitnessClass>(fitnessClassId);
 
             bool dateTime = DateTime.TryParseExact(model.StartTime, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date);
 
             if (fitnessClass != null)
             {
+                fitnessClass.Title = model.Title;
                 fitnessClass.Capacity = model.Capacity;
                 fitnessClass.Description = model.Description;
                 fitnessClass.Duration = model.Duration;
@@ -225,6 +225,8 @@ namespace FitnessApp.Services.Data
 
         public async Task<FitnessClassDetailsServiceModel> FitnessClassDetailsByIdAsync(string id)
         {
+            var fitnessClass = repository.AllReadOnly<FitnessClass>()
+                .Where(fc => fc.Id.ToString() == id);
             return await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Id.ToString() == id)
                 .Select(fc => new FitnessClassDetailsServiceModel
@@ -237,8 +239,12 @@ namespace FitnessApp.Services.Data
                     Category = fc.Category.Name,
                     Title = fc.Title,
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
-                    InstructorFirstName = fc.Instructor.User.FirstName,
-                    InstructorLastName = fc.Instructor.User.LastName,
+                    Instructor = new InstructorServiceModel
+                    {
+                        Rating = fc.Instructor.Rating,
+                        FullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName
+                    },
+                    InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName
                 })
                 .FirstAsync();
         }
@@ -254,6 +260,7 @@ namespace FitnessApp.Services.Data
                 .Where(fc => fc.Id.ToString() == id)
                 .Select(fc => new FitnessClassFormModel()
                 {
+                    Id = fc.Id.ToString(),
                     Title = fc.Title,
                     Description = fc.Description,
                     CategoryId = fc.CategoryId,

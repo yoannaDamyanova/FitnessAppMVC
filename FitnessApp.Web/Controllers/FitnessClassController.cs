@@ -5,6 +5,7 @@ using FitnessApp.Web.Extensions;
 using FitnessApp.Web.ViewModels.FitnessClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static FitnessApp.Web.ViewModels.FitnessClass.Extensions.ModelExtensions;
 
 namespace FitnessApp.Web.Controllers
 {
@@ -191,6 +192,51 @@ namespace FitnessApp.Web.Controllers
             var model = await fitnessService.GetFitnessClassFormModelByIdAsync(fitnessClassId);
 
             model.Categories = await fitnessService.AllCategoriesAsync();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [MustBeInstructor]
+        public async Task<IActionResult> Edit(FitnessClassFormModel model)
+        {
+            if (await fitnessService.ExistsAsync(model.Id) == false)
+            {
+                return BadRequest();
+            }
+
+            if (await fitnessService.HasInstructorWithIdAsync(model.Id, User.Id()) == false
+                && User.IsAdmin() == false)
+            {
+                return Unauthorized();
+            }
+
+            if (await fitnessService.CategoryExistsAsync(model.CategoryId) == false)
+            {
+                ModelState.AddModelError(nameof(model.CategoryId), "Category does not exist");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Categories = await fitnessService.AllCategoriesAsync();
+
+                return View(model);
+            }
+
+            await fitnessService.EditAsync(model);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(string fitnessClassId)
+        {
+            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            {
+                return BadRequest();
+            }
+
+            var model = await fitnessService.FitnessClassDetailsByIdAsync(fitnessClassId);
 
             return View(model);
         }

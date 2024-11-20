@@ -1,0 +1,59 @@
+﻿@model FitnessClassDetailsServiceModel
+@inject IInstructorService instructorService
+@inject IFitnessClassService fitnessClassService
+
+@{
+    ViewBag.Title = "Fitness Class Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="col-8">
+            <p style="font-size:25px;"><u>@Model.Title</u></p>
+            <p>@Model.Description</p>
+            <p>Category: <b>@Model.Category</b></p>
+            <div class="form-inline">
+                @if (this.User.Identity.IsAuthenticated)
+                {
+                    if (await fitnessClassService.HasInstructorWithIdAsync(Model.Id, User.Id())
+                    || User.IsAdmin())
+                    {
+                        <a class="btn btn-warning" asp-controller="FitnessClass" asp-action="Edit"
+                           asp-route-fitnessClassId="@Model.Id">Edit</a>
+                        <a class="ml-2 btn btn-danger" asp-controller="FitnessClass" asp-action="Delete"
+                           asp-route-fitnessClassId="@Model.Id">Delete</a>
+                    }
+
+                    if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
+                    && ((await instructorService.ExistsByIdAsync(User.Id())) == false || User.IsAdmin()))
+                    {
+
+                        <form class="ml-2" asp-controller="FitnessClass"
+                              asp-action="Book" asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary" type="submit" value="Book Class" />
+                        </form>
+
+                    }
+                    else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == true)
+                    {
+                        <form class="ml-2" asp-controller="FitnessClass" asp-action="CancelBooking"
+                              asp-route-id="@Model.Id" method="post">
+                            <input class="btn btn-primary" type="submit" value="Cancel Booking" />
+                        </form>
+                    }
+                }                
+            </div>
+            <p></p>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Instructor Info</h5>
+                    <p class="card-text">Name:  @Model.Instructor.FullName</p>
+                    <p class="card-text">Rating:  @Model.Instructor.Rating</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

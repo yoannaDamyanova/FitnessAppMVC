@@ -1,16 +1,13 @@
-﻿
-using FitnessApp.Web.ViewModels.Attributes;
+﻿using FitnessApp.Web.ViewModels.Attributes;
 using FitnessApp.Web.ViewModels.Category;
-using Microsoft.VisualBasic;
+using FitnessApp.Web.ViewModels.FitnessClass.Contracts;
 using System.ComponentModel.DataAnnotations;
-using static FitnessApp.Common.EntityValidationConstants;
 using static FitnessApp.Common.EntityValidationConstants.FitnessClass;
 using static FitnessApp.Common.ErrorMessageConstants;
 
-
 namespace FitnessApp.Web.ViewModels.FitnessClass
 {
-    public class FitnessClassFormModel
+    public class FitnessClassFormModel : IFitnessClassModel
     {
         [Required(ErrorMessage = RequiredMessage)]
         [StringLength(MaxTitleLength,
@@ -42,5 +39,9 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
 
         public IEnumerable<FitnessClassCategoryServiceModel> Categories { get; set; } =
             new HashSet<FitnessClassCategoryServiceModel>();
+
+        public bool IsActive { get; set; }
+
+        public string? Id { get; set; }
     }
 }

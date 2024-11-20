@@ -36,7 +36,6 @@ else
             <tr>
             <tr>
                 <th>Title</th>
-                <th>Description</th>
                 <th>Start Time</th>
                 <th>Instructor</th>
                 <th>Duration</th>
@@ -47,15 +46,18 @@ else
             {
                 <tr>
                     <td>@fitnessClass.Title</td>
-                    <td>@fitnessClass.Description</td>
                     <td>@fitnessClass.StartTime</td>
                     <td>@fitnessClass.InstructorName</td>
                     <td>@fitnessClass.Duration</td>
-                    @if (User?.Identity?.IsAuthenticated == true && await instructorService.ExistsByIdAsync(User.Id()))
+                    @if (User?.Identity?.IsAuthenticated == true)
                     {
                         <td>
-                            <a asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-primary">Edit</a>
-                            <a asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-danger">Delete</a>
+                            <a asp-controller="FitnessClass" asp-action="Details" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-primary" role="button">Details</a>
+                            @if (await instructorService.ExistsByIdAsync(User.Id()) == true)
+                            {
+                                <a asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-primary">Edit</a>
+                                <a asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-danger">Delete</a>
+                            }
                         </td>
                     }
                 </tr>
