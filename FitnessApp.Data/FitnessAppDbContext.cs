@@ -24,6 +24,11 @@ namespace FitnessApp.Data
             modelBuilder.ApplyConfiguration(new InstructorConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new UserClaimsConfiguration());
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => new { b.UserId, b.FitnessClassId })
+                .IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -35,6 +40,6 @@ namespace FitnessApp.Data
 
         public virtual DbSet<Review> Reviews { get; set; } = null!;
 
-        public virtual DbSet<Instructor> Instructors { get; set; } 
+        public virtual DbSet<Instructor> Instructors { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace FitnessApp.Data.Models
         public string LastName { get; set; } = null!;
 
         // Navigation properties
-        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

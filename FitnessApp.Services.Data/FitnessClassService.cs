@@ -158,7 +158,8 @@ namespace FitnessApp.Services.Data
 
         public async Task BookAsync(string id, string userId)
         {
-            var fitnessClass = await repository.GetByIdAsync<FitnessClass>(id);
+            Guid fitnessClassId = Guid.Parse(id);
+            var fitnessClass = await repository.GetByIdAsync<FitnessClass>(fitnessClassId);
             var user = await repository.GetByIdAsync<ApplicationUser>(userId);
 
             if (fitnessClass != null && user != null)
@@ -174,8 +175,6 @@ namespace FitnessApp.Services.Data
                 };
 
                 fitnessClass.Bookings.Add(booking);
-
-                user.Bookings.Add(booking);
 
                 await repository.SaveChangesAsync();
             }
@@ -277,16 +276,16 @@ namespace FitnessApp.Services.Data
                 .AnyAsync(fc => fc.Instructor.UserId == userId);
         }
 
-        public async Task<bool> IsBookedByIUserWithIdAsync(string fitnessClassId, string userId)
+        public async Task<bool> IsBookedByIUserWithIdAsync(string id, string userId)
         {
-            var user = await repository.AllReadOnly<ApplicationUser>()
-                .FirstOrDefaultAsync(a => a.Id == userId);
-            return user.Bookings.Any(b => b.FitnessClassId.ToString() == fitnessClassId);
+            Guid fitnessClassId = Guid.Parse(id);
+            return await repository.AllReadOnly<Booking>()
+                .AnyAsync(b => b.UserId == userId && b.FitnessClassId == fitnessClassId);
         }
 
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
         {
-            var classes= await repository.AllReadOnly<FitnessClass>()
+            var classes = await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Status == true && fc.Capacity > 0)
                 .Take(5)
                 .Select(fc => new FitnessClassIndexServiceModel()
@@ -302,15 +301,15 @@ namespace FitnessApp.Services.Data
             return classes;
         }
 
-        public async Task UnBookAsync(string fitnessClassId, string userId)
+        public async Task UnBookAsync(string id, string userId)
         {
+            Guid fitnessClassId = Guid.Parse(id);
             var fitnessClass = await repository.GetByIdAsync<FitnessClass>(fitnessClassId);
 
-            var booking = await repository.GetByIdAsync<Booking>(userId);
+            var booking = await repository.AllReadOnly<Booking>()
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.FitnessClassId == fitnessClassId);
 
-            var user = await repository.GetByIdAsync<ApplicationUser>(userId);
-
-            if (fitnessClass != null && user != null)
+            if (fitnessClass != null)
             {
                 if (booking == null)
                 {
@@ -319,8 +318,7 @@ namespace FitnessApp.Services.Data
 
                 fitnessClass.Capacity++;
 
-                user.Bookings.Remove(booking);
-                fitnessClass.Bookings.Remove(booking);
+                await repository.DeleteAsync<Booking>(booking.Id);
                 await repository.SaveChangesAsync();
             }
         }

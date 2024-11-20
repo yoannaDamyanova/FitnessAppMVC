@@ -16,7 +16,7 @@
             <p>@Model.Description</p>
             <p>Category: <b>@Model.Category</b></p>
             <div class="form-inline">
-                @if (this.User.Identity.IsAuthenticated)
+                @if (this.User?.Identity?.IsAuthenticated == true)
                 {
                     if (await fitnessClassService.HasInstructorWithIdAsync(Model.Id, User.Id())
                     || User.IsAdmin())
@@ -32,15 +32,15 @@
                     {
 
                         <form class="ml-2" asp-controller="FitnessClass"
-                              asp-action="Book" asp-route-id="@Model.Id" method="post">
+                              asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post">
                             <input class="btn btn-primary" type="submit" value="Book Class" />
                         </form>
 
                     }
                     else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == true)
                     {
-                        <form class="ml-2" asp-controller="FitnessClass" asp-action="CancelBooking"
-                              asp-route-id="@Model.Id" method="post">
+                        <form class="ml-2" asp-controller="FitnessClass" asp-action="UnBook"
+                              asp-route-fitnessClassId="@Model.Id" method="post">
                             <input class="btn btn-primary" type="submit" value="Cancel Booking" />
                         </form>
                     }

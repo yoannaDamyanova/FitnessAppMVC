@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FitnessApp.Data.Models
 {
-    [PrimaryKey(nameof(UserId), nameof(FitnessClassId))]
     public class Booking
     {
+        [Key]
+        public int Id { get; set; }
+
         [Required]
         [ForeignKey(nameof(UserId))]
         public ApplicationUser User { get; set; } = null!;
