@@ -1,1 +1,16 @@
-﻿
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = Localizer["Title"];
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="row">
+    @foreach (var fitnessClass in Model.FitnessClasses)
+    {
+        <partial name="_FitnessClassPartial" model="@fitnessClass" />
+    }
+</div>

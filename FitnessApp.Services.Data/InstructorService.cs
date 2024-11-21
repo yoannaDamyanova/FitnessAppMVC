@@ -2,9 +2,7 @@
 using FitnessApp.Data.Repository.Contracts;
 using FitnessApp.Services.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace FitnessApp.Services.Data
 {

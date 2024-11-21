@@ -106,19 +106,30 @@ namespace FitnessApp.Services.Data
             {
                 throw new UnauthorizedAccessException("No such user exists!");
             }
-            var bookedFitnessClasses = user.Bookings.Select(b => b.FitnessClass).ToList();
 
-            return bookedFitnessClasses
-                .Select(bfc => new FitnessClassServiceModel
+            var bookings = await repository.AllReadOnly<Booking>()
+                .ToListAsync();
+
+            List<FitnessClassServiceModel> bookedClasses = new List<FitnessClassServiceModel>();
+
+            foreach (var booking in bookings)
+            {
+                if (booking.UserId == userId)
                 {
-                    Id = bfc.Id.ToString(),
-                    Duration = bfc.Duration,
-                    Capacity = bfc.Capacity,
-                    IsActive = bfc.Status,
-                    InstructorFullName = bfc.Instructor.User.FirstName + " " + bfc.Instructor.User.LastName,
-                    StartTime = bfc.StartTime.ToString("dd/MM/yyyy HH:mm")
-                })
-                .ToList();
+                    var fc = await repository.GetByIdAsync<FitnessClass>(booking.FitnessClassId);
+                    bookedClasses.Add(new FitnessClassServiceModel
+                    {
+                        Id = fc.Id.ToString(),
+                        Duration = fc.Duration,
+                        Capacity = fc.Capacity,
+                        IsActive = fc.Status,
+                        InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName,
+                        StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
+                    });
+                }
+            }
+
+            return bookedClasses;
         }
 
         public async Task<IEnumerable<FitnessClassCategoryServiceModel>> AllCategoriesAsync()
@@ -145,10 +156,11 @@ namespace FitnessApp.Services.Data
             return await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.InstructorId == instructorId)
                 .Select(fc => new FitnessClassInstructorViewModel
-                {                   
+                {
+                    FitnessClassId = fc.Id.ToString(),
                     Title = fc.Title,
                     LeftCapacity = fc.Capacity - fc.LeftCapacity,
-                    IsActive = fc.Status,                 
+                    IsActive = fc.Status,
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
                 }).ToListAsync();
         }
@@ -169,9 +181,10 @@ namespace FitnessApp.Services.Data
                     {
                         UserId = userId,
                         FitnessClassId = fitnessClass.Id,
-                        FitnessClass = fitnessClass,
-                        User = user
+                        BookingDate = fitnessClass.StartTime
                     };
+
+                    await repository.AddAsync<Booking>(booking);
 
                     await repository.SaveChangesAsync();
                 }

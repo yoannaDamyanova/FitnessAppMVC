@@ -248,5 +248,12 @@ namespace FitnessApp.Web.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> BookedClasses()
+        {
+            var bookedClasses = await fitnessService.AllBookedByUserId(User.Id());
+            return View(bookedClasses);
+        }
     }
 }
