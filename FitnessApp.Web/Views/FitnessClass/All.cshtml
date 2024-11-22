@@ -24,6 +24,19 @@
             </div>
         </div>
 
+        <div class="form-group col-md-3 d-flex justify-content-between">
+            <div class="form-group">
+                <label asp-for="Status"></label>
+                <select asp-for="Status" class="form-control">
+                    <option value="">All</option>
+                    @foreach (var status in Model.Statuses)
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+            </div>
+        </div>
+
         <div class="form-group col-md-3">
             <label asp-for="SearchTerm"></label>
             <input asp-for="SearchTerm" class="form-control" placeholder="...">
@@ -33,11 +46,9 @@
             <div class="form-group">
                 <label asp-for="Sorting"></label>
                 <select asp-for="Sorting" class="form-control">
-                    <option value="0">Newest</option>
-                    <option value="1">Status</option>
-                    <option value="2">Canceled</option>
-                    <option value="3">Duration</option>
-                    <option value="4">StartTime</option>
+                    <option value="1">Newest</option>
+                    <option value="2">Duration</option>
+                    <option value="3">StartTime</option>
                 </select>
             </div>
         </div>

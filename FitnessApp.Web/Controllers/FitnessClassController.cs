@@ -70,6 +70,7 @@ namespace FitnessApp.Web.Controllers
         {
             var classes = await fitnessService.AllAsync(
                 model.Category,
+                model.Status,
                 model.SearchTerm,
                 model.Sorting,
                 model.CurrentPage,

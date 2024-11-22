@@ -22,6 +22,7 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<FitnessClassQueryServiceModel> AllAsync(
             string? category = null,
+            string? status = null,
             string? searchTerm = null,
             FitnessClassSorting sorting = FitnessClassSorting.Newest,
             int currentPage = 1,

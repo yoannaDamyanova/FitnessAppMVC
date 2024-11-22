@@ -44,6 +44,7 @@ namespace FitnessApp.Services.Data
         }
 
         public async Task<FitnessClassQueryServiceModel> AllAsync(string? category = null,
+            string? status = null,
             string? searchTerm = null,
             FitnessClassSorting sorting = FitnessClassSorting.Newest,
             int currentPage = 1,
@@ -55,6 +56,19 @@ namespace FitnessApp.Services.Data
             {
                 classesToShow = classesToShow.Where(c => c.Category.Name == category);
             }
+
+            if (status != null) 
+            {
+                if (status == "Active")
+                {
+                    classesToShow = classesToShow.Where(c => c.Status);
+                }
+                else
+                {
+                    classesToShow = classesToShow.Where(c => !c.Status);
+                }
+            }
+
 
             if (searchTerm != null)
             {
@@ -68,8 +82,6 @@ namespace FitnessApp.Services.Data
 
             classesToShow = sorting switch
             {
-                FitnessClassSorting.Active => (IQueryable<FitnessClass>)classesToShow.Select(c => c.Status == true),
-                FitnessClassSorting.Canceled => (IQueryable<FitnessClass>)classesToShow.Select(c => c.Status == false),
                 FitnessClassSorting.Duration => classesToShow.OrderBy(c => c.Duration),
                 FitnessClassSorting.StartTime => classesToShow.OrderBy(c => c.StartTime),
                 _ => classesToShow.OrderByDescending(c => c.Id),
