@@ -29,6 +29,11 @@
                        class="btn btn-warning">Edit</a>
                     <a asp-area="" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.FitnessClassId"
                        class="btn btn-danger">Delete</a>
+                    if (Model.IsActive == true)
+                    {
+                        <a asp-area="" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.FitnessClassId"
+                           class="btn btn-danger">Cancel Class</a>
+                    }
                 }
             }
         </div>
