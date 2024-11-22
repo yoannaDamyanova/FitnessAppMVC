@@ -34,6 +34,7 @@ namespace FitnessApp.Services.Data
                 StartTime = date,
                 Duration = model.Duration,
                 Capacity = model.Capacity,
+                LeftCapacity = model.Capacity,
                 Status = true
             };
 
@@ -76,7 +77,7 @@ namespace FitnessApp.Services.Data
 
             foreach (var fc in classesToShow)
             {
-                if (fc.StartTime < DateTime.Now)
+                if (fc.StartTime < DateTime.Now || fc.LeftCapacity <= 0)
                 {
                     fc.Status = false;
                 }
@@ -90,7 +91,7 @@ namespace FitnessApp.Services.Data
                     Id = c.Id.ToString(),
                     Title = c.Title,
                     Duration = c.Duration,
-                    Capacity = c.Capacity,
+                    Capacity = c.LeftCapacity,
                     IsActive = c.Status,
                     InstructorFullName = c.Instructor.User.FirstName + " " + c.Instructor.User.LastName,
                     StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm")
@@ -188,9 +189,9 @@ namespace FitnessApp.Services.Data
 
             if (fitnessClass != null && user != null)
             {
-                if (fitnessClass.Capacity - 1 > 0)
+                if (fitnessClass.LeftCapacity - 1 > 0)
                 {
-                    fitnessClass.LeftCapacity = fitnessClass.Capacity - 1;
+                    fitnessClass.LeftCapacity--;
 
                     Booking booking = new()
                     {
@@ -342,7 +343,7 @@ namespace FitnessApp.Services.Data
                     throw new UnauthorizedAccessException("This user has not booked this class");
                 }
 
-                fitnessClass.LeftCapacity = fitnessClass.Capacity + 1;
+                fitnessClass.LeftCapacity+=1;
 
                 await repository.DeleteAsync<Booking>(booking.Id);
                 await repository.SaveChangesAsync();

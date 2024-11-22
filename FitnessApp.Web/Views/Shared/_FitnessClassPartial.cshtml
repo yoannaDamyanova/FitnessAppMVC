@@ -41,9 +41,11 @@
                            class="btn btn-danger">Cancel class</a>
                     }
                 }
-                if (await instructorService.ExistsByIdAsync(User.Id()) == false 
-                    && User.IsAdmin() == false 
-                    && await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false)
+                if (await instructorService.ExistsByIdAsync(User.Id()) == false
+                && User.IsAdmin() == false
+                && await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
+                && Model.IsActive == true
+                && Model.Capacity > 0)
                 {
                     <form class="input-group-sm" asp-controller="FitnessClass"
                           asp-area="" asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post">
@@ -57,7 +59,7 @@
                         <input class="btn btn-primary" type="submit" value="Cancel Booking" />
                     </form>
                 }
-            }         
+            }
         </div>
     </div>
 </div>
