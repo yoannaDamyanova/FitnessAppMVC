@@ -6,7 +6,6 @@ using FitnessApp.Web.ViewModels.FitnessClass;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using FitnessApp.Web.Infrastructure.Enumerations;
-using Azure.Core;
 using FitnessApp.Web.ViewModels.Instructor;
 
 namespace FitnessApp.Services.Data
@@ -75,6 +74,14 @@ namespace FitnessApp.Services.Data
                 _ => classesToShow.OrderByDescending(c => c.Id),
             };
 
+            foreach (var fc in classesToShow)
+            {
+                if (fc.StartTime < DateTime.Now)
+                {
+                    fc.Status = false;
+                }
+            }
+
             var classes = await classesToShow
                 .Skip((currentPage - 1) * classesPerPage)
                 .Take(classesPerPage)
@@ -117,18 +124,26 @@ namespace FitnessApp.Services.Data
                 if (booking.UserId == userId)
                 {
                     var fc = await repository.GetByIdAsync<FitnessClass>(booking.FitnessClassId);
+                    var instructor = await repository.GetByIdAsync<Instructor>(fc.InstructorId);
+                    var instructorUser = await repository.GetByIdAsync<ApplicationUser>(instructor.UserId);
+
+                    if (fc.StartTime < DateTime.Now)
+                    {
+                        fc.Status = false;
+                    }
+
                     bookedClasses.Add(new FitnessClassServiceModel
                     {
                         Id = fc.Id.ToString(),
+                        Title = fc.Title,
                         Duration = fc.Duration,
                         Capacity = fc.Capacity,
                         IsActive = fc.Status,
-                        InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName,
-                        StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
+                        InstructorFullName = instructorUser.FirstName + " " + instructorUser.LastName,
+                        StartTime = fc.StartTime.ToString(),
                     });
                 }
             }
-
             return bookedClasses;
         }
 

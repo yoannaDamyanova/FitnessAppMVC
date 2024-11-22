@@ -1,15 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<FitnessClassServiceModel>;
 @inject IViewLocalizer Localizer
 
 @{
-    ViewBag.Title = Localizer["Title"];
+    ViewBag.Title = "My booked fitness classes";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
 
 <div class="row">
-    @foreach (var fitnessClass in Model.FitnessClasses)
+    @foreach (var fitnessClass in Model)
     {
         <partial name="_FitnessClassPartial" model="@fitnessClass" />
     }
