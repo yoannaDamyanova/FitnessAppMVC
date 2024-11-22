@@ -1,4 +1,5 @@
-﻿using FitnessApp.Data.Repository;
+﻿using FitnessApp.Data.Models;
+using FitnessApp.Data.Repository;
 using FitnessApp.Services.Data.Contracts;
 using FitnessApp.Web.Attributes;
 using FitnessApp.Web.Extensions;
@@ -6,6 +7,7 @@ using FitnessApp.Web.ViewModels.FitnessClass;
 using FitnessApp.Web.ViewModels.Instructor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static FitnessApp.Common.EntityValidationConstants;
 using static FitnessApp.Web.ViewModels.FitnessClass.Extensions.ModelExtensions;
 
 namespace FitnessApp.Web.Controllers
@@ -254,6 +256,29 @@ namespace FitnessApp.Web.Controllers
         {
             var bookedClasses = await fitnessService.AllBookedByUserId(User.Id());
             return View(bookedClasses);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CancelClass(string fitnessClassId)
+        {
+            var fitnessClass = await fitnessService.GetByIdAsync(fitnessClassId);
+
+            var model = new FitnessClassCancelViewModel
+            {
+                Id = fitnessClassId,
+                Title = fitnessClass.Title,
+                StartTime = fitnessClass.StartTime.ToString()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelClass(FitnessClassCancelViewModel model)
+        {
+            await fitnessService.CancelClassAsync(model.Id);
+
+            return RedirectToAction(nameof(All));
         }
     }
 }

@@ -56,5 +56,7 @@ namespace FitnessApp.Services.Data.Contracts
         //Task ApproveHouseAsync(int houseId);
 
         Task<FitnessClass> GetByIdAsync(string fitnessClassId);
+
+        Task CancelClassAsync(string fitnessClassId);
     }
 }

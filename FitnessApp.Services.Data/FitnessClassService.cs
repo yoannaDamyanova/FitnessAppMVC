@@ -348,5 +348,15 @@ namespace FitnessApp.Services.Data
                 await repository.SaveChangesAsync();
             }
         }
+
+        public async Task CancelClassAsync(string fitnessClassId)
+        {
+            var id = Guid.Parse(fitnessClassId);
+            var fitnessClass = await repository.GetByIdAsync<FitnessClass>(id);
+
+            fitnessClass.Status = false;
+
+            await repository.SaveChangesAsync();
+        }
     }
 }

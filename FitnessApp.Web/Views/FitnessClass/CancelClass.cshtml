@@ -1,0 +1,18 @@
+﻿@model FitnessClassCancelViewModel
+
+@{
+    ViewData["Title"] = "Cancel Fitness class";
+}
+
+<form asp-action="CancelClass" asp-controller="FitnessClass" method="post">
+    <h3>Are you sure you want to cancel this class?</h3>
+    <p class="mb-3">Title: <b>@Model.Title</b></p>
+    <p class="mb-3">StartTime: <b>@Model.StartTime</b></p>
+
+    <div class="form-group">
+        <input type="hidden" asp-for="@Model.Title" value="@Model.Title" />
+        <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
+        <input type="hidden" asp-for="@Model.StartTime" value="@Model.StartTime" />
+        <button type="submit" class="btn btn-primary">Cancel</button>
+    </div>
+</form>

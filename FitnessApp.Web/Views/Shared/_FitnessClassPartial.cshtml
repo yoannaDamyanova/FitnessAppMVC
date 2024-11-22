@@ -35,6 +35,11 @@
                        class="btn btn-warning">Edit</a>
                     <a asp-area="" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.Id"
                        class="btn btn-danger">Delete</a>
+                    if (Model.IsActive == true)
+                    {
+                        <a asp-area="" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.Id"
+                           class="btn btn-danger">Cancel class</a>
+                    }
                 }
                 if (await instructorService.ExistsByIdAsync(User.Id()) == false 
                     && User.IsAdmin() == false 
