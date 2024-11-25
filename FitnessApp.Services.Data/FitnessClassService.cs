@@ -101,14 +101,6 @@ namespace FitnessApp.Services.Data
                 _ => classesToShow.OrderByDescending(c => c.Id),
             };
 
-            foreach (var fc in classesToShow)
-            {
-                if (fc.StartTime < DateTime.Now)
-                {
-                    fc.StatusId = 3;
-                }
-            }
-
             IEnumerable<Status> statuses = AllStatuses();
 
             var classes = await classesToShow
