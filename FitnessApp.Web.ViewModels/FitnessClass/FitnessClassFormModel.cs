@@ -40,7 +40,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
         public IEnumerable<FitnessClassCategoryServiceModel> Categories { get; set; } =
             new HashSet<FitnessClassCategoryServiceModel>();
 
-        public string Status { get; set; } = null!;
+        public string? Status { get; set; }
 
         public string? Id { get; set; }
     }
