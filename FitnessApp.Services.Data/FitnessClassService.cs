@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using FitnessApp.Web.Infrastructure.Enumerations;
 using FitnessApp.Web.ViewModels.Instructor;
+using FitnessApp.Web.ViewModels.Review;
 
 namespace FitnessApp.Services.Data
 {
@@ -286,6 +287,18 @@ namespace FitnessApp.Services.Data
         {
             var fitnessClass = repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Id.ToString() == id);
+
+            var reviews = repository.AllReadOnly<Review>()
+                .Where(r => r.FitnessClassId.ToString() == id)
+                .Select(r => new ReviewViewModel()
+                {
+                    Rating = r.Rating,
+                    Comments = r.Comments,
+                    ReviewerName = r.User.FirstName + " " + r.User.LastName,
+                })
+                .ToList();
+
+
             return await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Id.ToString() == id)
                 .Select(fc => new FitnessClassDetailsServiceModel
@@ -297,6 +310,7 @@ namespace FitnessApp.Services.Data
                     Category = fc.Category.Name,
                     Title = fc.Title,
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
+                    Reviews = reviews,
                     Instructor = new InstructorServiceModel
                     {
                         Rating = fc.Instructor.Rating,

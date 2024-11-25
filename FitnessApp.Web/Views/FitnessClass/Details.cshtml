@@ -56,11 +56,21 @@
                 }                
             </div>
             <p></p>
-            <div class="card" style="width: 18rem;">
+            <div class="card mb-2" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Instructor Info</h5>
                     <p class="card-text">Name:  @Model.Instructor.FullName</p>
                     <p class="card-text">Rating:  @Model.Instructor.Rating</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Reviews</h5>                        
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <partial name="_ReviewPartial" model="@review" />
+                    }
                 </div>
             </div>
         </div>

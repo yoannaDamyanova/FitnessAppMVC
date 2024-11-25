@@ -1,4 +1,5 @@
 ﻿using FitnessApp.Web.ViewModels.Instructor;
+using FitnessApp.Web.ViewModels.Review;
 
 namespace FitnessApp.Web.ViewModels.FitnessClass
 {
@@ -9,5 +10,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
         public string Category { get; set; } = null!;
 
         public InstructorServiceModel Instructor { get; set; } = null!;
+
+        public IEnumerable<ReviewViewModel> Reviews { get; set; } = null!;
     }
 }
