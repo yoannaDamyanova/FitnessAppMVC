@@ -63,5 +63,9 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task CancelClassAsync(string fitnessClassId);
 
+        Task WriteReviewAsync(FitnessClassReviewFormModel model, string userId);
+
+        Task<bool> UserHasReviewedClassAsync(string userId, string fitnessClassId);
+
     }
 }

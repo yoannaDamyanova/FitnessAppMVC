@@ -49,6 +49,10 @@
                             <input class="btn btn-primary" type="submit" value="Cancel Booking" />
                         </form>
                     }
+                    if (Model.Status != "Canceled" && await fitnessClassService.UserHasReviewedClassAsync(User.Id(), Model.Id) == false)
+                    {
+                        <a asp-controller="FitnessClass" asp-action="ReviewClass" asp-route-fitnessClassId="@Model.Id" class="btn btn-primary" role="button">Write review</a>
+                    }
                 }                
             </div>
             <p></p>

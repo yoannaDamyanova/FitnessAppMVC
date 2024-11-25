@@ -407,5 +407,26 @@ namespace FitnessApp.Services.Data
                 .Distinct()
                 .ToListAsync();
         }
+
+        public async Task WriteReviewAsync(FitnessClassReviewFormModel model, string userId)
+        {
+            var review = new Review()
+            {
+                Rating = model.Rating,
+                Comments = model.Comments,
+                FitnessClassId = Guid.Parse(model.FitnessClassId),
+                UserId = userId,
+                DateSubmitted = DateTime.UtcNow,
+            };
+
+            await repository.AddAsync<Review>(review);
+            await repository.SaveChangesAsync();
+        }
+
+        public async Task<bool> UserHasReviewedClassAsync(string userId, string fitnessClassId)
+        {
+            return await repository.AllReadOnly<Review>()
+                .AnyAsync(r=>r.FitnessClassId == Guid.Parse(fitnessClassId) && r.UserId == userId); 
+        }
     }
 }

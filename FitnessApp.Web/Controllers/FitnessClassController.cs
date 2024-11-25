@@ -262,6 +262,7 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpGet]
+        [MustBeInstructor]
         public async Task<IActionResult> CancelClass(string fitnessClassId)
         {
             var fitnessClass = await fitnessService.GetByIdAsync(fitnessClassId);
@@ -277,9 +278,32 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpPost]
+        [MustBeInstructor]
         public async Task<IActionResult> CancelClass(FitnessClassCancelViewModel model)
         {
             await fitnessService.CancelClassAsync(model.Id);
+
+            return RedirectToAction(nameof(All));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ReviewClass(string fitnessClassId)
+        {
+            var fitnessClass = await fitnessService.GetByIdAsync(fitnessClassId);
+
+            var model = new FitnessClassReviewFormModel
+            {
+                FitnessClassId = fitnessClassId,
+                ClassTitle = fitnessClass.Title,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReviewClass(FitnessClassReviewFormModel model)
+        {
+            await fitnessService.WriteReviewAsync(model, User.Id());
 
             return RedirectToAction(nameof(All));
         }

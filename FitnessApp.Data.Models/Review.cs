@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using static FitnessApp.Common.EntityValidationConstants.Review;
 
 namespace FitnessApp.Data.Models
 {
@@ -18,7 +19,7 @@ namespace FitnessApp.Data.Models
         [Range(1, 5)]
         public int Rating { get; set; }
 
-        [MaxLength()]
+        [MaxLength(MaxCommentsLength)]
         public string Comments { get; set; } = null!;
 
         [Required]
