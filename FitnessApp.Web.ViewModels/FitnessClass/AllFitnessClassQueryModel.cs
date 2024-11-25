@@ -20,7 +20,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
 
         public IEnumerable<FitnessClassServiceModel> FitnessClasses { get; set; } = new List<FitnessClassServiceModel>();
 
-        public List<string> Statuses { get; set; } = new(){ "Active", "Canceled", "Finished" };
+        public IEnumerable<string> Statuses { get; set; } = null!;
 
         public string Status { get; init; } = null!;
     }

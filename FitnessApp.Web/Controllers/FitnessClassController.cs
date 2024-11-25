@@ -82,6 +82,8 @@ namespace FitnessApp.Web.Controllers
 
             model.Categories = await fitnessService.AllCategoriesNamesAsync();
 
+            model.Statuses = await fitnessService.AllStatusesNamesAsync();
+
             return View(model);
         }
 

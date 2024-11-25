@@ -24,7 +24,6 @@ namespace FitnessApp.Services.Data
 
             bool tryParse = DateTime.TryParseExact(model.StartTime, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date);
 
-
             FitnessClass fitnessClass = new FitnessClass()
             {
                 Title = model.Title,
@@ -35,8 +34,12 @@ namespace FitnessApp.Services.Data
                 Duration = model.Duration,
                 Capacity = model.Capacity,
                 LeftCapacity = model.Capacity,
-                Status = true
             };
+
+            var statuses = AllStatuses();
+            Status status = statuses.FirstOrDefault(s => s.Name == "Active");
+
+            fitnessClass.StatusId = status.Id;
 
             await repository.AddAsync(fitnessClass);
             await repository.SaveChangesAsync();
@@ -57,15 +60,23 @@ namespace FitnessApp.Services.Data
                 classesToShow = classesToShow.Where(c => c.Category.Name == category);
             }
 
-            if (status != null) 
+            if (status != null)
             {
                 if (status == "Active")
                 {
-                    classesToShow = classesToShow.Where(c => c.Status);
+                    classesToShow = classesToShow.Where(c => c.StatusId == 1);
                 }
-                else
+                else if (status == "Canceled")
                 {
-                    classesToShow = classesToShow.Where(c => !c.Status);
+                    classesToShow = classesToShow.Where(c => c.StatusId == 2);
+                }
+                else if (status == "Finished")
+                {
+                    classesToShow = classesToShow.Where(c => c.StatusId == 3);
+                }
+                else if (status == "Full")
+                {
+                    classesToShow = classesToShow.Where(c => c.StatusId == 4);
                 }
             }
 
@@ -89,11 +100,17 @@ namespace FitnessApp.Services.Data
 
             foreach (var fc in classesToShow)
             {
-                if (fc.StartTime < DateTime.Now || fc.LeftCapacity <= 0)
+                if (fc.StartTime < DateTime.Now)
                 {
-                    fc.Status = false;
+                    fc.StatusId = 3;
+                }
+                else if (fc.LeftCapacity <= 0)
+                {
+                    fc.StatusId = 4;
                 }
             }
+
+            IEnumerable<Status> statuses = AllStatuses();
 
             var classes = await classesToShow
                 .Skip((currentPage - 1) * classesPerPage)
@@ -104,7 +121,7 @@ namespace FitnessApp.Services.Data
                     Title = c.Title,
                     Duration = c.Duration,
                     Capacity = c.LeftCapacity,
-                    IsActive = c.Status,
+                    Status = statuses.Where(s => s.Id == c.StatusId).Select(s => s.Name).First(),
                     InstructorFullName = c.Instructor.User.FirstName + " " + c.Instructor.User.LastName,
                     StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm")
                 }).ToListAsync();
@@ -142,7 +159,11 @@ namespace FitnessApp.Services.Data
 
                     if (fc.StartTime < DateTime.Now)
                     {
-                        fc.Status = false;
+                        fc.StatusId = 3;
+                    }
+                    else if (fc.LeftCapacity <= 0)
+                    {
+                        fc.StatusId = 4;
                     }
 
                     bookedClasses.Add(new FitnessClassServiceModel
@@ -151,7 +172,7 @@ namespace FitnessApp.Services.Data
                         Title = fc.Title,
                         Duration = fc.Duration,
                         Capacity = fc.Capacity,
-                        IsActive = fc.Status,
+                        Status = AllStatuses().Where(s => s.Id == fc.StatusId).Select(s => s.Name).First(),
                         InstructorFullName = instructorUser.FirstName + " " + instructorUser.LastName,
                         StartTime = fc.StartTime.ToString(),
                     });
@@ -188,7 +209,7 @@ namespace FitnessApp.Services.Data
                     FitnessClassId = fc.Id.ToString(),
                     Title = fc.Title,
                     LeftCapacity = fc.Capacity - fc.LeftCapacity,
-                    IsActive = fc.Status,
+                    Status = AllStatuses().Where(s => s.Id == fc.StatusId).Select(s => s.Name).First(),
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
                 }).ToListAsync();
         }
@@ -272,7 +293,6 @@ namespace FitnessApp.Services.Data
                     Id = fc.Id.ToString(),
                     Duration = fc.Duration,
                     Capacity = fc.Capacity,
-                    IsActive = fc.Status,
                     Description = fc.Description,
                     Category = fc.Category.Name,
                     Title = fc.Title,
@@ -325,7 +345,7 @@ namespace FitnessApp.Services.Data
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
         {
             var classes = await repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.Status == true && fc.Capacity > 0)
+                .Where(fc => fc.StatusId == 1 && fc.Capacity > 0)
                 .Take(5)
                 .Select(fc => new FitnessClassIndexServiceModel()
                 {
@@ -355,7 +375,7 @@ namespace FitnessApp.Services.Data
                     throw new UnauthorizedAccessException("This user has not booked this class");
                 }
 
-                fitnessClass.LeftCapacity+=1;
+                fitnessClass.LeftCapacity += 1;
 
                 await repository.DeleteAsync<Booking>(booking.Id);
                 await repository.SaveChangesAsync();
@@ -367,9 +387,25 @@ namespace FitnessApp.Services.Data
             var id = Guid.Parse(fitnessClassId);
             var fitnessClass = await repository.GetByIdAsync<FitnessClass>(id);
 
-            fitnessClass.Status = false;
+            var statuses = AllStatuses();
+            var canceledStatus = statuses.FirstOrDefault(s => s.Name == "Canceled");
+
+            fitnessClass.StatusId = canceledStatus.Id;
 
             await repository.SaveChangesAsync();
+        }
+
+        public IEnumerable<Status> AllStatuses()
+        {
+            return repository.AllReadOnly<Status>();
+        }
+
+        public async Task<IEnumerable<string>> AllStatusesNamesAsync()
+        {
+            return await repository.AllReadOnly<Status>()
+                .Select(b => b.Name)
+                .Distinct()
+                .ToListAsync();
         }
     }
 }

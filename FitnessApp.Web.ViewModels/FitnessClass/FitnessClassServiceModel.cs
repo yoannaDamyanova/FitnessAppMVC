@@ -17,7 +17,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
             ErrorMessage = LengthMessage)]
         public string Title { get; set; } = string.Empty;
 
-        public bool IsActive { get; set; }
+        public string Status { get; set; } = null!;
 
         [Required(ErrorMessage = RequiredMessage)]
         [Range(MinDurationMinutes, MaxDurationMinutes)]

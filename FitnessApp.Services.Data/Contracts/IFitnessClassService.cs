@@ -16,6 +16,8 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<IEnumerable<FitnessClassCategoryServiceModel>> AllCategoriesAsync();
 
+        IEnumerable<Status> AllStatuses();
+
         Task<bool> CategoryExistsAsync(int categoryId);
 
         Task<Guid> AddClassAsync(FitnessClassFormModel model, int instructorId);
@@ -29,6 +31,7 @@ namespace FitnessApp.Services.Data.Contracts
             int housesPerPage = 1);
 
         Task<IEnumerable<string>> AllCategoriesNamesAsync();
+        Task<IEnumerable<string>> AllStatusesNamesAsync();
 
         Task<IEnumerable<FitnessClassInstructorViewModel>> AllFitnessClassesByInstructorIdAsync(int instructorId);
 
@@ -59,5 +62,6 @@ namespace FitnessApp.Services.Data.Contracts
         Task<FitnessClass> GetByIdAsync(string fitnessClassId);
 
         Task CancelClassAsync(string fitnessClassId);
+
     }
 }

@@ -21,6 +21,9 @@ namespace FitnessApp.Data.Models
         public int CategoryId { get; set; }
 
         [Required]
+        public int StatusId { get; set; }
+
+        [Required]
         public int InstructorId { get; set; }
 
         [Required]
@@ -36,9 +39,6 @@ namespace FitnessApp.Data.Models
         [Required]
         public int LeftCapacity { get; set; }
 
-        [Required]
-        public bool Status { get; set; } 
-
         // Navigation properties
         [Required]
         [ForeignKey(nameof(InstructorId))]
@@ -47,7 +47,10 @@ namespace FitnessApp.Data.Models
         [Required]
         public virtual Category Category { get; set; } = null!;
 
-        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        [Required]
+        [ForeignKey(nameof(StatusId))]
+        public virtual Status Status { get; set; } = null!;
 
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

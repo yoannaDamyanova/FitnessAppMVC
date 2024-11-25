@@ -24,10 +24,21 @@ namespace FitnessApp.Data
             modelBuilder.ApplyConfiguration(new InstructorConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new UserClaimsConfiguration());
+            modelBuilder.ApplyConfiguration(new StatusConfiguration());
 
             modelBuilder.Entity<Booking>()
                 .HasIndex(b => new { b.UserId, b.FitnessClassId })
                 .IsUnique();
+
+            modelBuilder.Entity<FitnessClass>()
+                .HasOne(c => c.Status)
+                .WithMany()
+                .HasForeignKey(c=>c.StatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<FitnessClass>()
+                .Property(c => c.StatusId)
+                .HasDefaultValue(1);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -40,6 +51,7 @@ namespace FitnessApp.Data
 
         public virtual DbSet<Review> Reviews { get; set; } = null!;
 
-        public virtual DbSet<Instructor> Instructors { get; set; }
+        public virtual DbSet<Instructor> Instructors { get; set; } = null !;
+        public virtual DbSet<Status> Statuses { get; set; } = null !;
     }
 }

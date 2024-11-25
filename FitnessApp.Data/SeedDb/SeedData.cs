@@ -22,11 +22,17 @@ namespace FitnessApp.Data.SeedDb
         public Category HIITCategory { get; set; }
         public Category FamilyFitnessCategory { get; set; }
 
+        public Status ActiveStatus { get; set; }
+        public Status CanceledStatus { get; set; }
+        public Status FinishedStatus { get; set; }
+        public Status FullStatus { get; set; }
+
         public SeedData()
         {
             SeedUsers();
             SeedInstructor();
             SeedCategories();
+            SeedStatuses();
         }
 
         private void SeedUsers()
@@ -133,6 +139,33 @@ namespace FitnessApp.Data.SeedDb
             {
                 Id = 7,
                 Name = "FamilyFitness"
+            };
+        }
+
+        private void SeedStatuses()
+        {
+            ActiveStatus = new Status()
+            {
+                Id = 1,
+                Name = "Active"
+            };
+
+            CanceledStatus = new Status()
+            {
+                Id = 2,
+                Name = "Canceled"
+            };
+
+            FinishedStatus = new Status()
+            {
+                Id = 3,
+                Name = "Finished"
+            };
+
+            FullStatus = new Status()
+            {
+                Id = 4,
+                Name = "Full"
             };
         }
     }

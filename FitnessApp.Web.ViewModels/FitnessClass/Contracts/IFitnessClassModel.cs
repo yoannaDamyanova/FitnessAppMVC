@@ -5,6 +5,6 @@ namespace FitnessApp.Web.ViewModels.FitnessClass.Contracts
     {
         public string Title { get; set; }
 
-        public bool IsActive { get; set; }
+        public string Status { get; set; }
     }
 }

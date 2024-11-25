@@ -25,7 +25,7 @@
                            asp-route-fitnessClassId="@Model.Id">Edit</a>
                         <a class="ml-2 btn btn-danger" asp-controller="FitnessClass" asp-action="Delete"
                            asp-route-fitnessClassId="@Model.Id">Delete</a>
-                        if (Model.IsActive == true && Model.Capacity > 0 )
+                        if (Model.Status == "Active" || Model.Status == "Full")
                         {
                             <a class="ml-2 btn btn-danger" asp-controller="FitnessClass" asp-action="CancelClass"
                                asp-route-fitnessClassId="@Model.Id">CancelClass</a>

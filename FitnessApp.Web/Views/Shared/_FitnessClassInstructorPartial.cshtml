@@ -11,7 +11,7 @@
             <p>@Model.Title</p>
 
             <h5 class="card-title">Is Active</h5>
-            <p>@(Model.IsActive ? "Active" : "Canceled")</p>
+            <p>@(Model.Status)</p>
 
             <h5 class="card-title">Capacity</h5>
             <p>@Model.LeftCapacity</p>
@@ -29,7 +29,7 @@
                        class="btn btn-warning">Edit</a>
                     <a asp-area="" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.FitnessClassId"
                        class="btn btn-danger">Delete</a>
-                    if (Model.IsActive == true)
+                    if (Model.Status == "Active" || Model.Status == "Full")
                     {
                         <a asp-area="" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.FitnessClassId"
                            class="btn btn-danger">Cancel Class</a>

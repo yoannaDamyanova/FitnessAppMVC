@@ -10,6 +10,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
     public class FitnessClassIndexServiceModel : IFitnessClassModel
     {
         public string Id { get; set; }
+
         public string Title { get ; set ; }
 
         public string Description { get ; set ; }
@@ -19,6 +20,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
         public string InstructorName { get; set; }
 
         public string Duration { get; set; }
-        public bool IsActive { get ; set ; }
+
+        public string Status { get; set; }
     }
 }
