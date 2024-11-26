@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace FitnessApp.Services.Data
 {
     using FitnessApp.Services.Data.Contracts;
-    using System.Diagnostics;
 
     public class LicenseGeneratorService : ILicenseGeneratorService
     {
