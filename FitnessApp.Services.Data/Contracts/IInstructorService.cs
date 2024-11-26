@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FitnessApp.Web.ViewModels.Instructor;
 
 namespace FitnessApp.Services.Data.Contracts
 {
@@ -10,7 +6,7 @@ namespace FitnessApp.Services.Data.Contracts
     {
         Task<bool> ExistsByIdAsync(string userId);
 
-        Task CreateAsync(string userId);
+        Task CreateAsync(BecomeInstructorFormModel model, string userId);
 
         Task<int?> GetInstructorByIdAsync(string userId);
 

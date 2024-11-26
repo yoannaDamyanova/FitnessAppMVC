@@ -1,6 +1,7 @@
 ﻿using FitnessApp.Data.Models;
 using FitnessApp.Data.Repository.Contracts;
 using FitnessApp.Services.Data.Contracts;
+using FitnessApp.Web.ViewModels.Instructor;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -9,10 +10,20 @@ namespace FitnessApp.Services.Data
     public class InstructorService : BaseService, IInstructorService
     {
         private readonly IRepository repository;
-        private readonly string licenseFilePath = "FitnessApp.Web/wwwroot/data/license_numbers.json"; // Path to the JSON file
+        private readonly string projectRoot;
+
+
+        private readonly string licenseFilePath;
 
         public InstructorService(IRepository _repository)
         {
+            projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\"));
+            licenseFilePath = Path.Combine(
+            projectRoot,                          
+                "FitnessApp.Services.Data",          
+                "Licenses",                           
+                "localLicenseNumbers.json"           
+            );
             repository = _repository;
         }
         private List<int> LoadLicenseNumbers()
@@ -26,9 +37,19 @@ namespace FitnessApp.Services.Data
             return new List<int>(licenseNumbers);
         }
 
-        public async Task CreateAsync(string userId)
+        public async Task CreateAsync(BecomeInstructorFormModel model, string userId)
         {
-            await repository.AddAsync(new Instructor { UserId = userId });
+            var instructor = new Instructor()
+            {
+                UserId = userId,
+                Biography = model.Biography,
+                LicenseNumber = model.LicenseNumber,
+                Specializations = model.Specializations,
+            };
+
+            await repository.AddAsync(instructor);
+
+            await repository.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsByIdAsync(string userId)

@@ -49,9 +49,9 @@ namespace FitnessApp.Web.Controllers
                 return View(model);
             }
 
-            await instructorService.CreateAsync(User.Id());
+            await instructorService.CreateAsync(model, User.Id());
 
-            return RedirectToAction(nameof(FitnessClassController.Index), "FitnessClass"); 
+            return RedirectToAction("All", "FitnessClass"); 
         }
     }
 }
