@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using static FitnessApp.Web.Extensions.ApplicationBuilderExtensions;
 using static FitnessApp.Web.Extensions.ServiceCollectionExtension;
-using FitnessApp.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace FitnessApp.Web
 {

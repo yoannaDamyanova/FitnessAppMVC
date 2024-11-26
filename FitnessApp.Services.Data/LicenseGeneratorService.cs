@@ -11,30 +11,24 @@ namespace FitnessApp.Services.Data
 
     public class LicenseGeneratorService : ILicenseGeneratorService
     {
-        public void GenerateLicenseNumbers()
+        public List<int> GenerateUniqueLicenseNumbers()
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "python",
-                Arguments = "FitnessApp.Web/wwwroot/Scripts/generate_license_numbers.py", 
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
+            HashSet<int> numbers = new HashSet<int>();
 
-            using (var process = new Process { StartInfo = startInfo })
-            {
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+            // Add the first number manually (123456)
+            numbers.Add(123456);
 
-                if (process.ExitCode != 0)
-                {
-                    throw new Exception($"Error generating license numbers: {error}");
-                }
+            Random rand = new Random();
+
+            // Generate unique numbers until we reach the desired count
+            while (numbers.Count < 50)
+            {   
+                int randomNumber = rand.Next(100000, 1000000);
+                numbers.Add(randomNumber);
             }
+
+            // Return the numbers as a list
+            return new List<int>(numbers);
         }
     }
 }

@@ -8,6 +8,6 @@ namespace FitnessApp.Services.Data.Contracts
 {
     public interface ILicenseGeneratorService
     {
-        public void GenerateLicenseNumbers();
+        public List<int> GenerateUniqueLicenseNumbers();
     }
 }

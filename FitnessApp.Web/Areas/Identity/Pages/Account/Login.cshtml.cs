@@ -21,12 +21,14 @@ namespace FitnessApp.Web.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ApplicationUser> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<ApplicationUser> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<ApplicationUser> logger, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
