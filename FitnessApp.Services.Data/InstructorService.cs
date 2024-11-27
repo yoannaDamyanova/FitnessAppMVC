@@ -97,7 +97,7 @@ namespace FitnessApp.Services.Data
 
         public async Task<Instructor> GetByIdAsync(int userId)
         {
-            return await repository.AllReadOnly<Instructor>()
+            return await repository.All<Instructor>()
                 .Where(i => i.Id == userId)
                 .Include(i => i.User)
                 .FirstOrDefaultAsync();
@@ -126,6 +126,7 @@ namespace FitnessApp.Services.Data
 
             return new InstructorViewModel()
             {
+                Id = instructor.Id,
                 Biography = instructor.Biography,
                 Specializations = instructor.Specializations,
                 FullName = instructor.User.FirstName + " " + instructor.User.LastName,

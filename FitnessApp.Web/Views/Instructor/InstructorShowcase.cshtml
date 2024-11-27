@@ -14,6 +14,7 @@
                 <div class="card-body">
                     <h5 class="card-title">@Model.FullName</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Rating: @Model.Rating</h6>
+                    <a asp-action="RateInstructor" asp-controller="User" asp-route-instructorId="@Model.Id">Rate instructor</a>
                     <p class="card-text">@Model.Biography</p>
                 </div>
             </div>
@@ -45,10 +46,10 @@
                             {
                                 <li class="list-group-item">
                                     <h6><strong>@fitnessClass.Title</strong></h6>
-                                    <p>@fitnessClass.Status</p>
-                                    <p>@fitnessClass.StartTime</p>
-                                    <p>@fitnessClass.Capacity</p>
-                                    <p>@fitnessClass.Duration</p>
+                                    <p>Status: @fitnessClass.Status</p>
+                                    <p>Start time: @fitnessClass.StartTime</p>
+                                    <p>Capacity: @fitnessClass.Capacity</p>
+                                    <p>Duration: @fitnessClass.Duration</p>
                                 </li>
                             }
                         </ul>

@@ -4,6 +4,8 @@ namespace FitnessApp.Web.ViewModels.Instructor
 {
     public class InstructorViewModel
     {
+        public int Id { get; set; }
+
         public string FullName { get; set; } = string.Empty;
 
         public double Rating { get; set; } 
