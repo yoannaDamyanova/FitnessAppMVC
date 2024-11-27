@@ -1,4 +1,5 @@
-﻿using FitnessApp.Web.ViewModels.Instructor;
+﻿using FitnessApp.Data.Models;
+using FitnessApp.Web.ViewModels.Instructor;
 
 namespace FitnessApp.Services.Data.Contracts
 {
@@ -17,5 +18,9 @@ namespace FitnessApp.Services.Data.Contracts
         Task<bool> IsLicenseNumberValidAsync(int licenseNumber);
 
         Task<double> GetRatingByIdAsync(string userId);
+
+        public Task<Instructor> GetByIdAsync(int userId);
+
+        public Task<InstructorViewModel> GetInstructorViewModelByIdAsync(int userId);
     }
 }

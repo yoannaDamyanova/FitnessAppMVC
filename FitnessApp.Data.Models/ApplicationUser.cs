@@ -8,14 +8,12 @@ namespace FitnessApp.Data.Models
     {
         [Required]
         [MaxLength(MaxNameLength)]
+        [PersonalData]
         public string FirstName { get; set; } = null!;
 
         [Required]
         [MaxLength(MaxNameLength)]
+        [PersonalData]
         public string LastName { get; set; } = null!;
-
-        // Navigation properties
-        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

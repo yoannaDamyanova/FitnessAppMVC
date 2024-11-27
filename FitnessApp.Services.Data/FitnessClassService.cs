@@ -114,7 +114,8 @@ namespace FitnessApp.Services.Data
                     Capacity = c.LeftCapacity,
                     Status = statuses.Where(s => s.Id == c.StatusId).Select(s => s.Name).First(),
                     InstructorFullName = c.Instructor.User.FirstName + " " + c.Instructor.User.LastName,
-                    StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm")
+                    StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm"),
+                    InstructorId = c.InstructorId,
                 }).ToListAsync();
 
             int totalClasses = await classesToShow.CountAsync();

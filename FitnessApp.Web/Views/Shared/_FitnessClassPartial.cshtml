@@ -23,7 +23,7 @@
             <p>@Model.StartTime</p>
 
             <h5 class="card-title">Instructor</h5>
-            <p>@Model.InstructorFullName</p>
+            <a asp-controller="Instructor" asp-action="InstructorShowCase" asp-route-instructorId="@Model.InstructorId">@Model.InstructorFullName</a>
 
             @if (User?.Identity?.IsAuthenticated == true)
             {

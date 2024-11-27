@@ -53,5 +53,13 @@ namespace FitnessApp.Web.Controllers
 
             return RedirectToAction("All", "FitnessClass"); 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> InstructorShowCase(int instructorId)
+        {
+            var model = await instructorService.GetInstructorViewModelByIdAsync(instructorId);
+
+            return View(model);
+        }
     }
 }

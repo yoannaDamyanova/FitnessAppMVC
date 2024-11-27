@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model InstructorViewModel
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = Localizer["Title"];
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Instructor Info Card -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.FullName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Rating: @Model.Rating</h6>
+                    <p class="card-text">@Model.Biography</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specializations Card -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Specializations</h5>
+                    <p class="card-text">@Model.Specializations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Classes Card -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Classes</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Classes.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var fitnessClass in Model.Classes)
+                            {
+                                <li class="list-group-item">
+                                    <h6><strong>@fitnessClass.Title</strong></h6>
+                                    <p>@fitnessClass.Status</p>
+                                    <p>@fitnessClass.StartTime</p>
+                                    <p>@fitnessClass.Capacity</p>
+                                    <p>@fitnessClass.Duration</p>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No classes available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

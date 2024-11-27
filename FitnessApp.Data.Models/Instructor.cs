@@ -26,8 +26,6 @@ namespace FitnessApp.Data.Models
         [Required]
         public int LicenseNumber { get; set; }
 
-        public List<FitnessClass> Classes { get; set; } = new List<FitnessClass> { };
-
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; } = null!;
     }

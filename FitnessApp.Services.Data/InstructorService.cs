@@ -1,6 +1,7 @@
 ﻿using FitnessApp.Data.Models;
 using FitnessApp.Data.Repository.Contracts;
 using FitnessApp.Services.Data.Contracts;
+using FitnessApp.Web.ViewModels.FitnessClass;
 using FitnessApp.Web.ViewModels.Instructor;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -19,10 +20,10 @@ namespace FitnessApp.Services.Data
         {
             projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\"));
             licenseFilePath = Path.Combine(
-            projectRoot,                          
-                "FitnessApp.Services.Data",          
-                "Licenses",                           
-                "localLicenseNumbers.json"           
+            projectRoot,
+                "FitnessApp.Services.Data",
+                "Licenses",
+                "localLicenseNumbers.json"
             );
             repository = _repository;
         }
@@ -92,6 +93,45 @@ namespace FitnessApp.Services.Data
                 .FirstOrDefaultAsync(i => i.UserId == userId);
 
             return instructor?.Rating ?? 0;
+        }
+
+        public async Task<Instructor> GetByIdAsync(int userId)
+        {
+            return await repository.AllReadOnly<Instructor>()
+                .Where(i => i.Id == userId)
+                .Include(i => i.User)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<InstructorViewModel> GetInstructorViewModelByIdAsync(int userId)
+        {
+            var instructor = await GetByIdAsync(userId);
+
+            var instructorClasses = await repository.AllReadOnly<FitnessClass>()
+                .Where(fc => fc.InstructorId == instructor.Id)
+                .Include(fc => fc.Instructor.User)
+                .Include(fc => fc.Status)
+                .Select(fc => new FitnessClassServiceModel()
+                {
+                    Id = fc.Id.ToString(),
+                    Duration = fc.Duration,
+                    Capacity = fc.Capacity,
+                    InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName,
+                    Title = fc.Title,
+                    Status = fc.Status.Name,
+                    StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
+                    InstructorId = instructor.Id
+                })
+                .ToListAsync();
+
+            return new InstructorViewModel()
+            {
+                Biography = instructor.Biography,
+                Specializations = instructor.Specializations,
+                FullName = instructor.User.FirstName + " " + instructor.User.LastName,
+                Classes = instructorClasses,
+                Rating = instructor.Rating
+            };
         }
     }
 }

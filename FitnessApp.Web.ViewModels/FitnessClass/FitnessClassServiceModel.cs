@@ -31,5 +31,8 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
         public string StartTime { get; set; } = string.Empty;
 
         public string InstructorFullName { get; set; } = string.Empty;
+
+        [Required]
+        public int InstructorId { get; set; }
     }
 }

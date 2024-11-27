@@ -49,28 +49,23 @@ namespace FitnessApp.Services.Data
                 // Serialize the numbers to JSON
                 string json = JsonConvert.SerializeObject(numbers, Formatting.Indented);
 
-                // Debugging: Print the serialized JSON
-                Console.WriteLine("Serialized JSON:");
-                Console.WriteLine(json);
-
                 // Ensure the directory exists before writing to the file
                 var directory = Path.GetDirectoryName(_filePath);
                 if (!Directory.Exists(directory))
                 {
                     Console.WriteLine($"Directory does not exist. Creating directory: {directory}");
-                    Directory.CreateDirectory(directory);  // Create the directory if it doesn't exist
+                    Directory.CreateDirectory(directory);
+                    try
+                    {
+                        File.WriteAllText(_filePath, json);
+                        Console.WriteLine("Number generation complete. Numbers saved to file.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error writing to file: {ex.Message}");
+                    }
                 }
-
-                // Try writing the numbers to the file
-                try
-                {
-                    File.WriteAllText(_filePath, json);
-                    Console.WriteLine("Number generation complete. Numbers saved to file.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error writing to file: {ex.Message}");
-                }
+                
             }
 
             await Task.CompletedTask;
