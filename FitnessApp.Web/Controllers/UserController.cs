@@ -29,5 +29,10 @@ namespace FitnessApp.Web.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> RateInstructor(InstructorRateFormModel model, int instructorId)
+        {
+            await instructorService.
+        }
     }
 }

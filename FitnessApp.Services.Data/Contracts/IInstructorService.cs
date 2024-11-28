@@ -22,5 +22,7 @@ namespace FitnessApp.Services.Data.Contracts
         public Task<Instructor> GetByIdAsync(int userId);
 
         public Task<InstructorViewModel> GetInstructorViewModelByIdAsync(int userId);
+
+        public Task Rate(InstructorRateFormModel model, int instructorId);
     }
 }

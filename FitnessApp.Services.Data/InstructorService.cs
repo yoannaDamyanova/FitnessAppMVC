@@ -134,5 +134,18 @@ namespace FitnessApp.Services.Data
                 Rating = instructor.Rating
             };
         }
+
+        public async Task Rate(InstructorRateFormModel model, int instructorId)
+        {
+            var instructor = await repository.All<Instructor>()
+                .FirstOrDefaultAsync(i=>i.Id == instructorId);
+
+            if (instructor != null)
+            {
+                instructor.Rating = model.Rating;
+
+                await repository.SaveChangesAsync();
+            }
+        }
     }
 }
