@@ -19,7 +19,7 @@ namespace FitnessApp.Web.Attributes
             }
 
             if (instructorService != null
-                && instructorService.ExistsByIdAsync(context.HttpContext.User.Id()).Result)
+                && instructorService.ExistsByUserIdAsync(context.HttpContext.User.Id()).Result)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status400BadRequest);
             }

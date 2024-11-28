@@ -33,7 +33,7 @@
                     }
 
                     if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
-                    && ((await instructorService.ExistsByIdAsync(User.Id())) == false || User.IsAdmin()))
+                    && ((await instructorService.ExistsByUserIdAsync(User.Id())) == false || User.IsAdmin()))
                     {
 
                         <form class="ml-2" asp-controller="FitnessClass"

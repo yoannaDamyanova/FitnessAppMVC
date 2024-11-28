@@ -53,9 +53,9 @@ namespace FitnessApp.Services.Data
             await repository.SaveChangesAsync();
         }
 
-        public async Task<bool> ExistsByIdAsync(string userId)
+        public async Task<bool> ExistsByIdAsync(int userId)
         {
-            return await repository.AllReadOnly<Instructor>().AnyAsync(i => i.UserId == userId);
+            return await repository.AllReadOnly<Instructor>().AnyAsync(i => i.Id == userId);
         }
 
         public async Task<int?> GetInstructorByIdAsync(string userId)
@@ -138,14 +138,46 @@ namespace FitnessApp.Services.Data
         public async Task Rate(InstructorRateFormModel model, int instructorId)
         {
             var instructor = await repository.All<Instructor>()
-                .FirstOrDefaultAsync(i=>i.Id == instructorId);
+                .FirstOrDefaultAsync(i => i.Id == instructorId);
 
             if (instructor != null)
             {
-                instructor.Rating = model.Rating;
+                instructor.Rating = Math.Round((instructor.Rating + model.Rating) / 2, 2);
 
                 await repository.SaveChangesAsync();
             }
+        }
+
+        public async Task EditBiographyAsync(InstructorEditBiographyFormModel model, int instructorId)
+        {
+            var instructor = await repository.All<Instructor>()
+                .FirstAsync(i => i.Id == instructorId);
+
+            instructor.Biography = model.Biography;
+
+            await repository.SaveChangesAsync();
+        }
+
+        public async Task EditSpecializationsAsync(InstructorEditSpecializationsFormModel model, int instructorId)
+        {
+            var instructor = await repository.All<Instructor>()
+                .FirstAsync(i => i.Id == instructorId);
+
+            instructor.Specializations = model.Specializations;
+
+            await repository.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsByUserIdAsync(string userId)
+        {
+            Guid parseGuid = Guid.Empty;
+            if (IsGuidValid(userId, ref parseGuid))
+            {
+                return await repository.AllReadOnly<Instructor>()
+                    .AnyAsync(i => i.UserId == userId);
+            }
+
+            return false;
         }
     }
 }

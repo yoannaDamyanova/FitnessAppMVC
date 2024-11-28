@@ -28,7 +28,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="All">All Fitness classes</a>
                             </li>
-                            @if (await instructorService.ExistsByIdAsync(User.Id()) == true)
+                            @if (await instructorService.ExistsByUserIdAsync(User.Id()) == true)
                             {
                                 <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="MyClasses">My Fitness classes</a>
                             }

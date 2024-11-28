@@ -5,7 +5,8 @@ namespace FitnessApp.Services.Data.Contracts
 {
     public interface IInstructorService
     {
-        Task<bool> ExistsByIdAsync(string userId);
+        Task<bool> ExistsByIdAsync(int userId);
+        Task<bool> ExistsByUserIdAsync(string userId);
 
         Task CreateAsync(BecomeInstructorFormModel model, string userId);
 
@@ -24,5 +25,8 @@ namespace FitnessApp.Services.Data.Contracts
         public Task<InstructorViewModel> GetInstructorViewModelByIdAsync(int userId);
 
         public Task Rate(InstructorRateFormModel model, int instructorId);
+
+        public Task EditBiographyAsync(InstructorEditBiographyFormModel model, int instructorId);
+        public Task EditSpecializationsAsync(InstructorEditSpecializationsFormModel model, int instructorId);
     }
 }

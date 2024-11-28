@@ -41,7 +41,7 @@
                            class="btn btn-danger">Cancel class</a>
                     }
                 }
-                if (await instructorService.ExistsByIdAsync(User.Id()) == false
+                if (await instructorService.ExistsByUserIdAsync(User.Id()) == false
                 && User.IsAdmin() == false
                 && await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
                 && Model.Status == "Active"

@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @model InstructorViewModel
 @inject IViewLocalizer Localizer
+@inject IInstructorService instructorService
 
 @{
     ViewBag.Title = Localizer["Title"];
@@ -14,8 +15,15 @@
                 <div class="card-body">
                     <h5 class="card-title">@Model.FullName</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Rating: @Model.Rating</h6>
-                    <a asp-action="RateInstructor" asp-controller="User" asp-route-instructorId="@Model.Id">Rate instructor</a>
+                    @if (await instructorService.ExistsByUserIdAsync(User.Id()) == false)
+                    {
+                        <a asp-action="RateInstructor" asp-controller="User" asp-route-instructorId="@Model.Id">Rate instructor</a>
+                    }
                     <p class="card-text">@Model.Biography</p>
+                    @if (await instructorService.ExistsByUserIdAsync(User.Id()))
+                    {
+                        <a asp-action="EditBiography" asp-controller="Instructor" asp-route-instructorId="@Model.Id">Edit</a>
+                    }
                 </div>
             </div>
         </div>
@@ -26,6 +34,10 @@
                 <div class="card-body">
                     <h5 class="card-title">Specializations</h5>
                     <p class="card-text">@Model.Specializations</p>
+                    @if (await instructorService.ExistsByUserIdAsync(User.Id()))
+                    {
+                        <a asp-action="EditSpecializations" asp-controller="Instructor" asp-route-instructorId="@Model.Id">Edit</a>
+                    }
                 </div>
             </div>
         </div>

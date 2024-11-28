@@ -16,6 +16,8 @@ namespace FitnessApp.Web.Controllers
             this.instructorService = instructorService;
         }
 
+
+        [HttpGet]
         public async Task<IActionResult> RateInstructor(int instructorId)
         {
             var instructor = await instructorService.GetByIdAsync(instructorId);
@@ -30,9 +32,12 @@ namespace FitnessApp.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> RateInstructor(InstructorRateFormModel model, int instructorId)
+        [HttpPost]
+        public async Task<IActionResult> RateInstructor(InstructorRateFormModel model)
         {
-            await instructorService.
+            await instructorService.Rate(model, model.Id);
+
+            return RedirectToAction("All", "FitnessClass");
         }
     }
 }

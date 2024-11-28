@@ -57,9 +57,78 @@ namespace FitnessApp.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> InstructorShowCase(int instructorId)
         {
+            if (await instructorService.ExistsByIdAsync(instructorId) == false)
+            {
+                return BadRequest();
+            }
+
             var model = await instructorService.GetInstructorViewModelByIdAsync(instructorId);
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditBiography(int instructorId)
+        {
+            if (await instructorService.ExistsByIdAsync(instructorId) == false)
+            {
+                return BadRequest();
+            }
+
+            var instructor = await instructorService.GetByIdAsync(instructorId);
+
+            var model = new InstructorEditBiographyFormModel()
+            {
+                Id = instructorId,
+                Biography = instructor.Biography
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBiography(int instructorId, InstructorEditBiographyFormModel model)
+        {
+            if (await instructorService.ExistsByIdAsync(instructorId) == false)
+            {
+                return BadRequest();
+            }
+
+            await instructorService.EditBiographyAsync(model, instructorId);
+
+            return RedirectToAction(nameof(InstructorShowCase), instructorId);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditSpecializations(int instructorId)
+        {
+            if (await instructorService.ExistsByIdAsync(instructorId) == false)
+            {
+                return BadRequest();
+            }
+
+            var instructor = await instructorService.GetByIdAsync(instructorId);
+
+            var model = new InstructorEditSpecializationsFormModel()
+            {
+                Id = instructorId,
+                Specializations = instructor.Specializations
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditSpecializations(int instructorId, InstructorEditSpecializationsFormModel model)
+        {
+            if (await instructorService.ExistsByIdAsync(instructorId) == false)
+            {
+                return BadRequest();
+            }
+
+            await instructorService.EditSpecializationsAsync(model, instructorId);
+
+            return RedirectToAction(nameof(InstructorShowCase), instructorId);
         }
     }
 }

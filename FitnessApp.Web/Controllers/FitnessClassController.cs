@@ -109,7 +109,7 @@ namespace FitnessApp.Web.Controllers
             var userId = User.Id();
             IEnumerable<FitnessClassInstructorViewModel> model;
 
-            if (await instructorService.ExistsByIdAsync(userId) == false)
+            if (await instructorService.ExistsByUserIdAsync(userId) == false)
             {
                 return Unauthorized();
             }
@@ -136,7 +136,7 @@ namespace FitnessApp.Web.Controllers
                 return BadRequest();
             }
 
-            if (await instructorService.ExistsByIdAsync(User.Id()) && User.IsAdmin() == false)
+            if (await instructorService.ExistsByUserIdAsync(User.Id()) && User.IsAdmin() == false)
             {
                 return Unauthorized();
             }

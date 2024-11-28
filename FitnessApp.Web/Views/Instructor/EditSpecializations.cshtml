@@ -1,0 +1,15 @@
+﻿@model InstructorEditSpecializationsFormModel
+
+@{
+    ViewData["Title"] = "Edit Specializations";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post" asp-action="EditSpecializations" asp-controller="Instructor">
+    <div class="form-group">
+        <textarea id="Specializations" name="Specializations" class="form-control" required rows="5">@Model.Specializations</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" asp-action="EditSpecializations" asp-controller="Instructor" asp-route-instructorId="@Model.Id">Save</button>
+</form>
