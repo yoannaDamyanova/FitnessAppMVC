@@ -8,7 +8,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
 {
     public class FitnessClassCancelViewModel
     {
-        public string Id { get; set; } = string.Empty;
+        public Guid Id { get; set; } 
 
         public string Title { get; set; } = string.Empty;
 

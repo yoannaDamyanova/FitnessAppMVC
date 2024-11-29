@@ -131,7 +131,14 @@ namespace FitnessApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Book(string fitnessClassId)
         {
-            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            Guid id = Guid.Empty;
+
+            if (!IsGuidValid(fitnessClassId, ref id))
+            {
+                return BadRequest();
+            }
+
+            if (await fitnessService.ExistsAsync(id) == false)
             {
                 return BadRequest();
             }
@@ -141,7 +148,7 @@ namespace FitnessApp.Web.Controllers
                 return Unauthorized();
             }
 
-            await fitnessService.BookAsync(fitnessClassId, User.Id());
+            await fitnessService.BookAsync(id, User.Id());
 
             return RedirectToAction(nameof(All));
         }
@@ -149,16 +156,22 @@ namespace FitnessApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> UnBook(string fitnessClassId)
         {
-            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(fitnessClassId, ref id))
+            {
+                return BadRequest();
+            }
+
+            if (await fitnessService.ExistsAsync(id) == false)
             {
                 return BadRequest();
             }
 
             try
             {
-                await fitnessService.UnBookAsync(fitnessClassId, User.Id());
+                await fitnessService.UnBookAsync(id, User.Id());
             }
-            catch (UnauthorizedAccessException exception)
+            catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized();
             }
@@ -170,7 +183,13 @@ namespace FitnessApp.Web.Controllers
         [MustBeInstructor]
         public async Task<IActionResult> Delete(string fitnessClassId)
         {
-            var fitnessClass = await fitnessService.GetByIdAsync(fitnessClassId);
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(fitnessClassId, ref id))
+            {
+                return BadRequest();
+            }
+
+            var fitnessClass = await fitnessService.GetByIdAsync(id);
             var categories = await fitnessService.AllCategoriesAsync();
             var category = categories.FirstOrDefault(c => c.Id == fitnessClass.CategoryId);
 
@@ -189,7 +208,13 @@ namespace FitnessApp.Web.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(FitnessClassDeleteViewModel model)
         {
-            await fitnessService.DeleteAsync(model.Id);
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(model.Id, ref id))
+            {
+                return BadRequest();
+            }
+
+            await fitnessService.DeleteAsync(id);
             return RedirectToAction("Index", "Home");
         }
 
@@ -197,7 +222,13 @@ namespace FitnessApp.Web.Controllers
         [MustBeInstructor]
         public async Task<IActionResult> Edit(string fitnessClassId)
         {
-            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(fitnessClassId, ref id))
+            {
+                return BadRequest();
+            }
+
+            if (await fitnessService.ExistsAsync(id) == false)
             {
                 return BadRequest();
             }
@@ -213,12 +244,18 @@ namespace FitnessApp.Web.Controllers
         [MustBeInstructor]
         public async Task<IActionResult> Edit(FitnessClassFormModel model)
         {
-            if (await fitnessService.ExistsAsync(model.Id) == false)
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(model.Id, ref id))
             {
                 return BadRequest();
             }
 
-            if (await fitnessService.HasInstructorWithIdAsync(model.Id, User.Id()) == false
+            if (await fitnessService.ExistsAsync(id) == false)
+            {
+                return BadRequest();
+            }
+
+            if (await fitnessService.HasInstructorWithIdAsync(id, User.Id()) == false
                 && User.IsAdmin() == false)
             {
                 return Unauthorized();
@@ -244,12 +281,18 @@ namespace FitnessApp.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(string fitnessClassId)
         {
-            if (await fitnessService.ExistsAsync(fitnessClassId) == false)
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(fitnessClassId, ref id))
             {
                 return BadRequest();
             }
 
-            var model = await fitnessService.FitnessClassDetailsByIdAsync(fitnessClassId);
+            if (await fitnessService.ExistsAsync(id) == false)
+            {
+                return BadRequest();
+            }
+
+            var model = await fitnessService.FitnessClassDetailsByIdAsync(id);
 
             return View(model);
         }
@@ -265,11 +308,17 @@ namespace FitnessApp.Web.Controllers
         [MustBeInstructor]
         public async Task<IActionResult> CancelClass(string fitnessClassId)
         {
-            var fitnessClass = await fitnessService.GetByIdAsync(fitnessClassId);
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(fitnessClassId, ref id))
+            {
+                return BadRequest();
+            }
+
+            var fitnessClass = await fitnessService.GetByIdAsync(id);
 
             var model = new FitnessClassCancelViewModel
             {
-                Id = fitnessClassId,
+                Id = id,
                 Title = fitnessClass.Title,
                 StartTime = fitnessClass.StartTime.ToString()
             };
@@ -281,6 +330,11 @@ namespace FitnessApp.Web.Controllers
         [MustBeInstructor]
         public async Task<IActionResult> CancelClass(FitnessClassCancelViewModel model)
         {
+            if (await fitnessService.ExistsAsync(model.Id) == false)
+            {
+                return BadRequest();
+            }
+
             await fitnessService.CancelClassAsync(model.Id);
 
             return RedirectToAction(nameof(All));
@@ -289,7 +343,18 @@ namespace FitnessApp.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ReviewClass(string fitnessClassId)
         {
-            var fitnessClass = await fitnessService.GetByIdAsync(fitnessClassId);
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(fitnessClassId, ref id))
+            {
+                return BadRequest();
+            }
+
+            if (await fitnessService.ExistsAsync(id) == false)
+            {
+                return BadRequest();
+            }
+
+            var fitnessClass = await fitnessService.GetByIdAsync(id);
 
             var model = new FitnessClassReviewFormModel
             {
@@ -303,6 +368,17 @@ namespace FitnessApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ReviewClass(FitnessClassReviewFormModel model)
         {
+            Guid id = Guid.Empty;
+            if (!IsGuidValid(model.FitnessClassId, ref id))
+            {
+                return BadRequest();
+            }
+
+            if (await fitnessService.ExistsAsync(id) == false)
+            {
+                return BadRequest();
+            }
+
             await fitnessService.WriteReviewAsync(model, User.Id());
 
             return RedirectToAction(nameof(All));

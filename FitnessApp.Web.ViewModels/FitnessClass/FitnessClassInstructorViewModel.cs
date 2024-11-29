@@ -9,7 +9,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
 {
     public class FitnessClassInstructorViewModel : IFitnessClassModel
     {
-        public string FitnessClassId { get; set; } = null!;
+        public Guid FitnessClassId { get; set; }
 
         public string Title { get; set; } = null!;
 

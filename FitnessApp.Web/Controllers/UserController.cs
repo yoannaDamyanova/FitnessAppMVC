@@ -6,13 +6,10 @@ namespace FitnessApp.Web.Controllers
 {
     public class UserController : BaseController
     {
-        private readonly IFitnessClassService fitnessService;
-
         private readonly IInstructorService instructorService;
 
-        public UserController(IFitnessClassService fitnessService, IInstructorService instructorService)
+        public UserController(IInstructorService instructorService)
         {
-            this.fitnessService = fitnessService;
             this.instructorService = instructorService;
         }
 

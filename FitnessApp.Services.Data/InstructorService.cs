@@ -113,7 +113,7 @@ namespace FitnessApp.Services.Data
                 .Include(fc => fc.Status)
                 .Select(fc => new FitnessClassServiceModel()
                 {
-                    Id = fc.Id.ToString(),
+                    Id = fc.Id,
                     Duration = fc.Duration,
                     Capacity = fc.Capacity,
                     InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName,

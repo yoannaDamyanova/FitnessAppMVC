@@ -17,7 +17,7 @@ namespace FitnessApp.Services.Data
 
         public FitnessClassStatusUpdateService(IServiceScopeFactory _serviceScopeFactory, ILogger<FitnessClassStatusUpdateService> _logger)
         {
-            this.serviceScopeFactory = _serviceScopeFactory;    
+            this.serviceScopeFactory = _serviceScopeFactory;
             this.logger = _logger;
         }
 
@@ -56,8 +56,17 @@ namespace FitnessApp.Services.Data
                 foreach (var fitnessClass in classesToUpdate)
                 {
                     fitnessClass.StatusId = 3; // Set status to Finished
-                                               // Update the class using IRepository, if you have an update method
-                    await repository.SaveChangesAsync();  // Make sure UpdateAsync is implemented
+
+                    var bookings = await repository.AllReadOnly<Booking>()
+                        .Where(b => b.FitnessClassId == fitnessClass.Id)
+                        .ToListAsync();
+                    foreach (var booking in bookings)
+                    {
+                        await repository.DeleteAsync<Booking>(booking);
+                    }
+
+                    await repository.SaveChangesAsync();
+
                 }
 
                 logger.LogInformation($"Updated {classesToUpdate.Count} fitness classes to 'Finished' status.");

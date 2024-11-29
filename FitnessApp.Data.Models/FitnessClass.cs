@@ -39,6 +39,8 @@ namespace FitnessApp.Data.Models
         [Required]
         public int LeftCapacity { get; set; }
 
+        public bool IsApproved { get; set; }
+
         // Navigation properties
         [Required]
         [ForeignKey(nameof(InstructorId))]

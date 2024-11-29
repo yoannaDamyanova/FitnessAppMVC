@@ -9,7 +9,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
 {
     public class FitnessClassServiceModel : IFitnessClassModel
     {
-        public string Id { get; set; } = string.Empty;
+        public Guid Id { get; set; } 
 
         [Required(ErrorMessage = RequiredMessage)]
         [StringLength(MaxTitleLength,

@@ -96,7 +96,7 @@ namespace FitnessApp.Web.Controllers
 
             await instructorService.EditBiographyAsync(model, instructorId);
 
-            return RedirectToAction(nameof(InstructorShowCase), instructorId);
+            return RedirectToAction("InstructorShowCase", "Instructor", instructorId);
         }
 
         [HttpGet]
@@ -128,7 +128,7 @@ namespace FitnessApp.Web.Controllers
 
             await instructorService.EditSpecializationsAsync(model, instructorId);
 
-            return RedirectToAction(nameof(InstructorShowCase), instructorId);
+            return RedirectToAction(nameof(InstructorShowCase), nameof(InstructorController), instructorId);
         }
     }
 }
