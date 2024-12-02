@@ -15,5 +15,7 @@ namespace FitnessApp.Data.Models
         [MaxLength(MaxNameLength)]
         [PersonalData]
         public string LastName { get; set; } = null!;
+
+        public Instructor? Instructor { get; set; }
     }
 }

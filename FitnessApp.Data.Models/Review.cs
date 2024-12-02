@@ -25,6 +25,9 @@ namespace FitnessApp.Data.Models
         [Required]
         public DateTime DateSubmitted { get; set; }
 
+        [Required]
+        public bool IsApproved { get; set; }
+
         // Navigation properties
         [Required]
         [ForeignKey(nameof(UserId))]

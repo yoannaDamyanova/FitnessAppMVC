@@ -1,0 +1,18 @@
+﻿@inject IInstructorService instructorService
+<ul class="navbar-nav flex-grow-1">
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="All">All Fitness classes</a>
+    </li>
+    @if (this.User?.Identity?.IsAuthenticated ?? false && User.IsAdmin() == false)
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="Booked">My Booked Fitness classes</a>
+        </li>
+        @if (await instructorService.ExistsByUserIdAsync(User.Id()) || User.IsAdmin())
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="Add">Add FitnessClass</a>
+            </li>
+        }
+    }
+</ul>

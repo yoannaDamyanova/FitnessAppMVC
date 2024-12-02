@@ -5,10 +5,19 @@
 @inject IInstructorService instructorService
 @using static FitnessApp.Web.Infrastructure.Constants.CustomClaims
 
+@{
+    string userName = string.Empty;
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        userName = User.FindFirstValue(FitnessApp.Web.Infrastructure.Constants.CustomClaims.UserFullNameClaim) ?? string.Empty;
+    }
+}
+
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        if (await instructorService.ExistsByUserIdAsync(User.Id()) == false)
+        if (await instructorService.ExistsByUserIdAsync(User.Id()) == false && User.IsAdmin() == false)
         {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Instructor" asp-action="Become">Become Instructor</a>
@@ -16,7 +25,7 @@
         }
 
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @userName!</a>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

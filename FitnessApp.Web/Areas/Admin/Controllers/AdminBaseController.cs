@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using static FitnessApp.Common.AdminConstants;
 
-namespace FitnessApp.Web.Areas.Adminn.Controllers
+namespace FitnessApp.Web.Areas.Admin.Controllers
 {
     [Area(AdminAreaName)]
     [Authorize(Roles = AdminRole)]
@@ -10,7 +10,7 @@ namespace FitnessApp.Web.Areas.Adminn.Controllers
     {
         protected bool IsGuidValid(string? id, ref Guid parsedGuid)
         {
-            if (String.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return false;
             }

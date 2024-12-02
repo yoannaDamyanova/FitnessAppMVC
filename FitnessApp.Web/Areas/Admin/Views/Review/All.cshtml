@@ -1,0 +1,25 @@
+﻿@model IEnumerable<ReviewViewModel>
+@{
+    ViewBag.Title = "All Reviews";
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+<div class="row">
+    @foreach (var review in Model)
+    {
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Review Details</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Fitness Class: @review.FitnessClassTitle</h5>
+                    <p class="card-text"><strong>Instructor:</strong> @review.InstructorFullName</p>
+                    <p class="card-text"><strong>Rating:</strong> @review.Rating</p>
+                    <p class="card-text"><strong>Reviewer:</strong> @review.ReviewerName</p>
+                    <p class="card-text"><strong>Comments:</strong> @review.Comments</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FitnessApp.Web.Areas.Adminn.Components
+namespace FitnessApp.Web.Components
 {
-    public class AdminMenuComponent : ViewComponent
+    public class MainMenuComponent : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {

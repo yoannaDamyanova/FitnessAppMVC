@@ -1,7 +1,7 @@
 ﻿using FitnessApp.Services.Data.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FitnessApp.Web.Areas.Adminn.Controllers
+namespace FitnessApp.Web.Areas.Admin.Controllers
 {
     public class FitnessClassController : AdminBaseController
     {

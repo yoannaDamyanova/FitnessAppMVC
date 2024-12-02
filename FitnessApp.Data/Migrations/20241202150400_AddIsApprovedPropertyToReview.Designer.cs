@@ -4,6 +4,7 @@ using FitnessApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessApp.Data.Migrations
 {
     [DbContext(typeof(FitnessAppDbContext))]
-    partial class FitnessAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241202150400_AddIsApprovedPropertyToReview")]
+    partial class AddIsApprovedPropertyToReview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,7 +104,7 @@ namespace FitnessApp.Data.Migrations
                         {
                             Id = "06e4a52b-0ee1-426f-b7a2-6b009a0c1f65",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "544eeb57-9ce9-422c-ac1a-0fbda5405195",
+                            ConcurrencyStamp = "f5895290-6474-40c3-94ea-79aef3687c5d",
                             Email = "instructor@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "John",
@@ -109,9 +112,9 @@ namespace FitnessApp.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "instructor@gmail.com",
                             NormalizedUserName = "instructor@gmail.com",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA2Db7Q+t5NPFYTpTODQDwRzKpzRY5wyEg388V48ZEevJqiSAoY6W6UjgJm238N2Bw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFcuccGgWansU+cAs4DTSWkpHRLDAcMAk8ot4ks7JhkEMe80lCQ6mQwP6jJlUsJlIA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a2785947-0ec8-42f9-a1f0-021a0f9f0b9f",
+                            SecurityStamp = "05576fee-d603-422f-8292-172b26ae9280",
                             TwoFactorEnabled = false,
                             UserName = "instructor@gmail.com"
                         },
@@ -119,7 +122,7 @@ namespace FitnessApp.Data.Migrations
                         {
                             Id = "69b38fdd-0aba-47f5-9f2b-6c7bb549d7ab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5234ddf5-a048-4c8e-a191-9cb544f97ca2",
+                            ConcurrencyStamp = "cecd0b10-5016-461d-a86b-e0405c493911",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Great",
@@ -127,9 +130,9 @@ namespace FitnessApp.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGBms2C98NUJ5frrtzyEvOSlJnI+mGFHSMpnJKY8bG/0wid8yMBoTn9APk4fcW1jxA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDGX/LYD7jXiOY1APkfTdFZkziv9IBtV0IzpD+aXq9qHEmHqsXuNDAkpOhL1TMqcHQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "aafe2f25-dc60-4a4c-a4dd-ed6a335ad2e4",
+                            SecurityStamp = "670b9f12-c5b4-43c2-9e0c-58051a5b3b6c",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         });
@@ -301,8 +304,7 @@ namespace FitnessApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Instructors");
 
@@ -595,8 +597,8 @@ namespace FitnessApp.Data.Migrations
             modelBuilder.Entity("FitnessApp.Data.Models.Instructor", b =>
                 {
                     b.HasOne("FitnessApp.Data.Models.ApplicationUser", "User")
-                        .WithOne("Instructor")
-                        .HasForeignKey("FitnessApp.Data.Models.Instructor", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -671,11 +673,6 @@ namespace FitnessApp.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FitnessApp.Data.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Instructor");
                 });
 
             modelBuilder.Entity("FitnessApp.Data.Models.Category", b =>

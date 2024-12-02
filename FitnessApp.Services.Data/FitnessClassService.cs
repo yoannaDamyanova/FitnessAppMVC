@@ -37,6 +37,7 @@ namespace FitnessApp.Services.Data
                 Duration = model.Duration,
                 Capacity = model.Capacity,
                 LeftCapacity = model.Capacity,
+                IsApproved = false
             };
 
             var statuses = AllStatuses();
@@ -56,7 +57,8 @@ namespace FitnessApp.Services.Data
             int currentPage = 1,
             int classesPerPage = 1)
         {
-            var classesToShow = repository.AllReadOnly<FitnessClass>(); //add approved by admin
+            var classesToShow = repository.AllReadOnly<FitnessClass>()
+                .Where(fc => fc.IsApproved == true); //add approved by admin
 
             if (category != null)
             {
@@ -189,7 +191,7 @@ namespace FitnessApp.Services.Data
         public async Task<IEnumerable<FitnessClassInstructorViewModel>> AllFitnessClassesByInstructorIdAsync(int instructorId)
         {
             return await repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.InstructorId == instructorId)
+                .Where(fc => fc.InstructorId == instructorId && fc.IsApproved == true)
                 .Select(fc => new FitnessClassInstructorViewModel
                 {
                     FitnessClassId = fc.Id,
@@ -260,6 +262,7 @@ namespace FitnessApp.Services.Data
                 fitnessClass.Duration = model.Duration;
                 fitnessClass.CategoryId = model.CategoryId;
                 fitnessClass.StartTime = date;
+                fitnessClass.IsApproved = false;
 
                 await repository.SaveChangesAsync();
             }
@@ -282,8 +285,12 @@ namespace FitnessApp.Services.Data
 
             var reviews = repository.AllReadOnly<Review>()
                 .Where(r => r.FitnessClassId == id)
+                .Include(f => f.FitnessClass)
+                .Include(r=>r.FitnessClass.Instructor.User)
                 .Select(r => new ReviewViewModel()
                 {
+                    InstructorFullName = r.FitnessClass.Instructor.User.FirstName + " " + r.FitnessClass.Instructor.User.LastName,
+                    FitnessClassTitle = r.FitnessClass.Title,
                     Rating = r.Rating,
                     Comments = r.Comments,
                     ReviewerName = r.User.FirstName + " " + r.User.LastName,
@@ -351,7 +358,7 @@ namespace FitnessApp.Services.Data
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
         {
             var classes = await repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.StatusId == 1 && fc.Capacity > 0)
+                .Where(fc => fc.StatusId == 1 && fc.Capacity > 0 && fc.IsApproved == true)
                 .Take(5)
                 .Select(fc => new FitnessClassIndexServiceModel()
                 {
@@ -436,6 +443,7 @@ namespace FitnessApp.Services.Data
                 FitnessClassId = Guid.Parse(model.FitnessClassId),
                 UserId = userId,
                 DateSubmitted = DateTime.UtcNow,
+                IsApproved = false,
             };
 
             await repository.AddAsync<Review>(review);
@@ -488,11 +496,15 @@ namespace FitnessApp.Services.Data
         {
             return await repository.AllReadOnly<Review>()
                 .Include(r => r.User)
+                .Include(r => r.FitnessClass)
+                .Include(r => r.FitnessClass.Instructor.User)
                 .Select(r => new ReviewViewModel()
                 {
+                    InstructorFullName = r.FitnessClass.Instructor.User.FirstName + " " + r.FitnessClass.Instructor.User.LastName,
+                    FitnessClassTitle = r.FitnessClass.Title,
                     Rating = r.Rating,
-                    ReviewerName = r.User.FirstName,
-                    Comments = r.User.LastName
+                    ReviewerName = r.User.FirstName + " " + r.User.LastName,
+                    Comments = r.Comments,
                 })
                 .ToListAsync();
         }
@@ -505,10 +517,10 @@ namespace FitnessApp.Services.Data
                 .Include(b => b.User)
                 .Select(b => new BookingViewModel()
                 {
-                   FitnessClassTitle = b.FitnessClass.Title,
-                   BookerName = b.User.FirstName + " " + b.User.LastName,
-                   InstructorFullName = b.FitnessClass.Instructor.User.FirstName + " " + b.FitnessClass.Instructor.User.LastName,
-                   BookingDate = b.FitnessClass.StartTime.ToString("dd/MM/yyyy HH:mm")
+                    FitnessClassTitle = b.FitnessClass.Title,
+                    BookerName = b.User.FirstName + " " + b.User.LastName,
+                    InstructorFullName = b.FitnessClass.Instructor.User.FirstName + " " + b.FitnessClass.Instructor.User.LastName,
+                    BookingDate = b.FitnessClass.StartTime.ToString("dd/MM/yyyy HH:mm")
                 })
                 .ToListAsync();
         }

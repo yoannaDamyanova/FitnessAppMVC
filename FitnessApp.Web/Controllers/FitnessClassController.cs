@@ -30,7 +30,7 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpGet]
-        [MustBeInstructor]
+
         public async Task<IActionResult> Add()
         {
             var model = new FitnessClassFormModel()
@@ -42,7 +42,7 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpPost]
-        [MustBeInstructor]
+
         public async Task<IActionResult> Add(FitnessClassFormModel model)
         {
             if (await fitnessService.CategoryExistsAsync(model.CategoryId) == false)
@@ -180,7 +180,6 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpGet]
-        [MustBeInstructor]
         public async Task<IActionResult> Delete(string fitnessClassId)
         {
             Guid id = Guid.Empty;
@@ -219,7 +218,6 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpGet]
-        [MustBeInstructor]
         public async Task<IActionResult> Edit(string fitnessClassId)
         {
             Guid id = Guid.Empty;
@@ -241,7 +239,6 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpPost]
-        [MustBeInstructor]
         public async Task<IActionResult> Edit(FitnessClassFormModel model)
         {
             Guid id = Guid.Empty;
@@ -305,7 +302,6 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpGet]
-        [MustBeInstructor]
         public async Task<IActionResult> CancelClass(string fitnessClassId)
         {
             Guid id = Guid.Empty;
@@ -327,7 +323,6 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpPost]
-        [MustBeInstructor]
         public async Task<IActionResult> CancelClass(FitnessClassCancelViewModel model)
         {
             if (await fitnessService.ExistsAsync(model.Id) == false)
