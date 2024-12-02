@@ -95,7 +95,7 @@ namespace FitnessApp.Web.Controllers
 
             if (User.IsAdmin())
             {
-                return RedirectToAction("Booked", "FitnessClass", new { area = "Admin" });
+                return RedirectToAction("Booked", "FitnessClass", new { area = "Adminn" });
             }
 
             model = await fitnessService.AllBookedByUserId(userId);

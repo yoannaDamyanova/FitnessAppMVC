@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FitnessApp.Web.Areas.Admin.Controllers
+namespace FitnessApp.Web.Areas.Adminn.Controllers
 {
     public class HomeController : AdminBaseController
     {

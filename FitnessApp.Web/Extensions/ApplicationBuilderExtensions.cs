@@ -17,7 +17,7 @@ namespace FitnessApp.Web.Extensions
                 var role = new IdentityRole(AdminRole);
                 await roleManager.CreateAsync(role);
 
-                var admin = await userManager.FindByEmailAsync("admin@mail.com");
+                var admin = await userManager.FindByEmailAsync("admin@gmail.com");
 
                 if (admin != null)
                 {

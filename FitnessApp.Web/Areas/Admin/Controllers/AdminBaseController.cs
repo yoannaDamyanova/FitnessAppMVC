@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using static FitnessApp.Common.AdminConstants;
 
-namespace FitnessApp.Web.Areas.Admin.Controllers
+namespace FitnessApp.Web.Areas.Adminn.Controllers
 {
     [Area(AdminAreaName)]
     [Authorize(Roles = AdminRole)]

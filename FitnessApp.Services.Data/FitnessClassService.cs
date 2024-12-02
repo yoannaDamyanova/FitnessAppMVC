@@ -83,7 +83,6 @@ namespace FitnessApp.Services.Data
                 }
             }
 
-
             if (searchTerm != null)
             {
                 string normalizedSearchTerm = searchTerm.ToLower();
@@ -92,7 +91,6 @@ namespace FitnessApp.Services.Data
                                 c.Duration.ToString().Contains(normalizedSearchTerm) ||
                                 c.Capacity.ToString().Contains(normalizedSearchTerm));
             }
-
 
             classesToShow = sorting switch
             {

@@ -71,9 +71,9 @@ namespace FitnessApp.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "House Details",
-                    pattern: "/House/Details/{id}/{information}",
-                    defaults: new { Controller = "House", Action = "Details" }
+                    name: "FitnessClass Details",
+                    pattern: "/FitnessClass/Details/{id}/{information}",
+                    defaults: new { Controller = "FitnessClass", Action = "Details" }
                 );
 
                 endpoints.MapControllerRoute(

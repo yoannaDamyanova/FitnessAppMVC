@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FitnessApp.Web.Areas.Admin.Components
+namespace FitnessApp.Web.Areas.Adminn.Components
 {
     public class AdminMenuComponent : ViewComponent
     {
