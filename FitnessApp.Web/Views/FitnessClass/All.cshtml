@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
-@model AllFitnessClassQueryModel;
+@model AllFitnessClassQueryModel
 @inject IViewLocalizer Localizer
 
 @{
@@ -9,13 +9,15 @@
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
 
+<!-- Search Form -->
 <form method="get">
     <div class="row">
-        <div class="form-group col-md-3 d-flex justify-content-between">
+        <!-- Category Filter -->
+        <div class="col-md-3">
             <div class="form-group">
-                <label asp-for="Category"></label>
+                <label asp-for="Category">@Localizer["Category"]</label>
                 <select asp-for="Category" class="form-control">
-                    <option value="">All</option>
+                    <option value="">@Localizer["All"]</option>
                     @foreach (var category in Model.Categories)
                     {
                         <option value="@category">@category</option>
@@ -24,11 +26,12 @@
             </div>
         </div>
 
-        <div class="form-group col-md-3 d-flex justify-content-between">
+        <!-- Status Filter -->
+        <div class="col-md-3">
             <div class="form-group">
-                <label asp-for="Status"></label>
+                <label asp-for="Status">@Localizer["Status"]</label>
                 <select asp-for="Status" class="form-control">
-                    <option value="">All</option>
+                    <option value="">@Localizer["All"]</option>
                     @foreach (var status in Model.Statuses)
                     {
                         <option value="@status">@status</option>
@@ -37,44 +40,46 @@
             </div>
         </div>
 
-        <div class="form-group col-md-3">
-            <label asp-for="SearchTerm"></label>
-            <input asp-for="SearchTerm" class="form-control" placeholder="...">
+        <!-- Search Term Input -->
+        <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="SearchTerm">@Localizer["SearchTerm"]</label>
+                <input asp-for="SearchTerm" class="form-control" placeholder="@Localizer["SearchPlaceholder"]" />
+            </div>
         </div>
 
-        <div class="form-group col-md-3">
+        <!-- Sorting Filter -->
+        <div class="col-md-3">
             <div class="form-group">
-                <label asp-for="Sorting"></label>
+                <label asp-for="Sorting">@Localizer["Sorting"]</label>
                 <select asp-for="Sorting" class="form-control">
-                    <option value="2">Duration</option>
-                    <option value="3">StartTime</option>
+                    <option value="2">@Localizer["Duration"]</option>
+                    <option value="3">@Localizer["StartTime"]</option>
                 </select>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="form-group mt-4 p-2">
-                <input type="submit" value="Search" class="btn btn-primary" />
-            </div>
+        <!-- Submit Button -->
+        <div class="col-md-12 mt-4 text-center">
+            <button type="submit" class="btn btn-success btn-lg fw-bold text-white rounded-pill px-5 py-3 shadow-lg">@Localizer["Search"]</button>
         </div>
     </div>
 </form>
 
+<hr />
 
 @{
     var previousPage = Model.CurrentPage - 1;
-    if (previousPage < 1)
-    {
-        previousPage = 1;
-    }
+    previousPage = previousPage < 1 ? 1 : previousPage;
 
-    var maxPage = Math.Ceiling((double)Model.TotalFitnessClassesCount /
-        Model.FitnessClassesPerPage);
+    var maxPage = Math.Ceiling((double)Model.TotalFitnessClassesCount / Model.FitnessClassesPerPage);
 }
 
+<!-- Pagination Controls -->
 <div class="row mb-5">
+    <!-- Previous Page Button -->
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
-        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+        <a class="btn btn-success btn-lg fw-bold text-white rounded-pill px-5 py-3 shadow-lg @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
            asp-controller="FitnessClass"
            asp-action="All"
            asp-route-currentPage="@previousPage"
@@ -83,14 +88,9 @@
            asp-route-sorting="@((int)Model.Sorting)"><<</a>
     </div>
 
-    @{
-        var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
-        !Model.FitnessClasses.Any();
-    }
-
+    <!-- Next Page Button -->
     <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
-        <a class="btn btn-primary
-           @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
+        <a class="btn btn-success btn-lg fw-bold text-white rounded-pill px-5 py-3 shadow-lg @(Model.CurrentPage == maxPage || !Model.FitnessClasses.Any() ? "disabled" : string.Empty)"
            asp-controller="FitnessClass"
            asp-action="All"
            asp-route-currentPage="@(Model.CurrentPage + 1)"
@@ -102,9 +102,10 @@
 
 @if (!Model.FitnessClasses.Any())
 {
-    <h2 class="text-center">No houses found by the given criteria!</h2>
+    <h2 class="text-center">No fitness classes found by the given criteria!</h2>
 }
 
+<!-- Display Fitness Classes -->
 <div class="row">
     @foreach (var fitnessClass in Model.FitnessClasses)
     {

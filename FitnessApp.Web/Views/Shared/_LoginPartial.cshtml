@@ -14,32 +14,37 @@
     }
 }
 
-<ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
-    {
-        if (await instructorService.ExistsByUserIdAsync(User.Id()) == false && User.IsAdmin() == false)
-        {
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Instructor" asp-action="Become">Become Instructor</a>
-            </li>
-        }
+<nav class="navbar navbar-light bg-transparent border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+        <!-- Left-aligned items (e.g. navigation links) -->
+        <ul class="navbar-nav d-flex flex-row">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                @if (await instructorService.ExistsByUserIdAsync(User.Id()) == false && User.IsAdmin() == false)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white btn btn-success rounded-pill px-4 py-2" asp-area="" asp-controller="Instructor" asp-action="Become">Become Instructor</a>
+                    </li>
+                }
 
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @userName!</a>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-            </form>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    }
-</ul>
+                <li class="nav-item">
+                    <a class="nav-link text-white btn btn-success rounded-pill px-4 py-2" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @userName!</a>
+                </li>
+                <li class="nav-item">
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="nav-link btn btn-link text-white">Logout</button>
+                    </form>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-white btn btn-success rounded-pill px-4 py-2" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white btn btn-success rounded-pill px-4 py-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>

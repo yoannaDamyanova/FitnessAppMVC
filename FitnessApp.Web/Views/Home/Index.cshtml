@@ -9,57 +9,64 @@
     var fitnessClasses = Model.ToList();
 }
 
-<div class="mt-4 p-5 bg-light">
+<div class="mt-4 p-5 bg-light text-center">
     <h1 class="display-4">Welcome to the best fitness class booking portal</h1>
     <hr class="my-4">
 </div>
 
 @if (!fitnessClasses.Any())
 {
-    <h2>There aren't any fitness classes yet!</h2>
+    <div class="text-center mt-4">
+        <h2>There aren't any fitness classes yet!</h2>
+    </div>
 }
 
-<p class="lead">
+<p class="lead text-center">
 
     @if (User?.Identity?.IsAuthenticated == true && await instructorService.ExistsByUserIdAsync(User.Id()) || User.IsAdmin())
     {
-        <a asp-controller="FitnessClass" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add FitnessCLass</a>
+        <a asp-controller="FitnessClass" asp-action="Add" class="btn btn-success btn-lg rounded-pill shadow-lg" role="button">Add Fitness Class</a>
     }
 </p>
 
-@if(fitnessClasses.Any())
+@if (fitnessClasses.Any())
 {
-<table class="table">
-    <thead>
-        <tr>
-        <tr>
-            <th>Title</th>
-            <th>Start Time</th>
-            <th>Instructor</th>
-            <th>Duration</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var fitnessClass in Model)
-        {
-            <tr>
-                <td>@fitnessClass.Title</td>
-                <td>@fitnessClass.StartTime</td>
-                <td>@fitnessClass.InstructorName</td>
-                <td>@fitnessClass.Duration</td>
-                @if (User?.Identity?.IsAuthenticated == true)
+    <div class="table-responsive mt-4">
+        <table class="table table-striped table-hover">
+            <thead class="table-success">
+                <tr>
+                    <th>Title</th>
+                    <th>Start Time</th>
+                    <th>Instructor</th>
+                    <th>Duration</th>
+                    @if (User?.Identity?.IsAuthenticated == true)
+                    {
+                        <th>Actions</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var fitnessClass in Model)
                 {
-                    <td>
-                        <a asp-controller="FitnessClass" asp-action="Details" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-primary" role="button">Details</a>
-                        @if (await instructorService.ExistsByUserIdAsync(User.Id()) == true)
+                    <tr>
+                        <td>@fitnessClass.Title</td>
+                        <td>@fitnessClass.StartTime.ToString()</td>
+                        <td>@fitnessClass.InstructorName</td>
+                        <td>@fitnessClass.Duration</td>
+                        @if (User?.Identity?.IsAuthenticated == true)
                         {
-                            <a asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-primary">Edit</a>
-                            <a asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-danger">Delete</a>
+                            <td>
+                                <a asp-controller="FitnessClass" asp-action="Details" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-outline-success rounded-pill px-3 py-2 me-2" role="button">Details</a>
+                                @if (await instructorService.ExistsByUserIdAsync(User.Id()) == true)
+                                {
+                                    <a asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-warning rounded-pill px-3 py-2 me-2">Edit</a>
+                                    <a asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@fitnessClass.Id" class="btn btn-danger rounded-pill px-3 py-2">Delete</a>
+                                }
+                            </td>
                         }
-                    </td>
+                    </tr>
                 }
-            </tr>
-        }
-    </tbody>
-</table>
+            </tbody>
+        </table>
+    </div>
 }

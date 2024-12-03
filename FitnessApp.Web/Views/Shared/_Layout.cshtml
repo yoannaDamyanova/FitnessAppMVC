@@ -8,17 +8,54 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        /* Custom CSS for color scheme */
+        body {
+            background-color: white;
+            color: black;
+        }
+        header {
+            background-color: #198754; /* Custom green shade */
+            color: white;
+        }
+        header .navbar {
+            padding: 1rem;
+        }
+        header .navbar-brand {
+            font-weight: bold;
+            color: white;
+        }
+        header .navbar-brand:hover {
+            color: #145c32; /* Darker green for hover effect */
+        }
+        footer {
+            background-color: #198754; /* Custom green shade */
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .btn-custom {
+            background-color: #198754; /* Custom green shade */
+            color: white;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #145c32; /* Darker green on hover */
+        }
+        .btn-link-custom {
+            color: #198754; /* Green color for links */
+        }
+        .btn-link-custom:hover {
+            color: #145c32; /* Darker green on hover */
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-light bg-transparent border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Fitness Class Booking System</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">Fitness Class Booking System</a>
+                <div class="d-flex">
                     @await Component.InvokeAsync(nameof(MainMenuComponent))
                     <partial name="_LoginPartial" />
                 </div>
@@ -31,9 +68,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-muted">
         <div class="container">
-            &copy; @DateTime.Today.Year - HouseRentingSystem
+            &copy; @DateTime.Today.Year - Fitness Class Booking
         </div>
     </footer>
 
@@ -42,6 +79,7 @@
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
     @if (TempData[UserMessageSuccess] != null)
     {
         <script defer>
@@ -51,7 +89,7 @@
     @if (TempData[UserMessageError] != null)
     {
         <script defer>
-            message.showError('@TempData[UserMessageSuccess]');
+            message.showError('@TempData[UserMessageError]');
         </script>
     }
 </body>

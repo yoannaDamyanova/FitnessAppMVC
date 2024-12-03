@@ -1,18 +1,31 @@
 ﻿@inject IInstructorService instructorService
-<ul class="navbar-nav flex-grow-1">
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="All">All Fitness classes</a>
-    </li>
-    @if (this.User?.Identity?.IsAuthenticated ?? false && User.IsAdmin() == false)
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="Booked">My Booked Fitness classes</a>
-        </li>
-        @if (await instructorService.ExistsByUserIdAsync(User.Id()) || User.IsAdmin())
-        {
+
+<nav class="navbar navbar-light bg-transparent border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+        <!-- Left-aligned items (e.g. navigation links) -->
+        <ul class="navbar-nav d-flex flex-row">
+            <!-- Link to view all fitness classes -->
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="FitnessClass" asp-action="Add">Add FitnessClass</a>
+                <a class="nav-link text-white btn btn-outline-success rounded-pill px-4 py-2" asp-area="" asp-controller="FitnessClass" asp-action="All">All Fitness Classes</a>
             </li>
-        }
-    }
-</ul>
+
+            @if (this.User?.Identity?.IsAuthenticated ?? false)
+            {
+                if (User.IsAdmin() == false && await instructorService.ExistsByUserIdAsync(User.Id())== false)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white btn btn-outline-success rounded-pill px-4 py-2" asp-area="" asp-controller="FitnessClass" asp-action="BookedClasses">My Booked Fitness Classes</a>
+                    </li>
+                }
+
+                @if (await instructorService.ExistsByUserIdAsync(User.Id()) || User.IsAdmin())
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white btn btn-outline-success rounded-pill px-4 py-2" asp-area="" asp-controller="FitnessClass" asp-action="Add">Add Fitness Class</a>
+                    </li>
+                }
+            }
+            
+        </ul>
+    </div>
+</nav>
