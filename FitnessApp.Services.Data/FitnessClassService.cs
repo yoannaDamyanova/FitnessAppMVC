@@ -241,6 +241,30 @@ namespace FitnessApp.Services.Data
 
         public async Task DeleteAsync(Guid fitnessClassId)
         {
+            var allClassReviews = await repository.All<Review>()
+                .Where(r => r.FitnessClassId == fitnessClassId)
+                .ToListAsync();
+
+            if (allClassReviews.Any())
+            {
+                foreach (var review in allClassReviews)
+                {
+                    await repository.DeleteAsync<Review>(review.Id);
+                }
+            }
+
+            var allClassBookings = await repository.All<Booking>()
+                .Where(b => b.FitnessClassId == fitnessClassId)
+                .ToListAsync();
+
+            if (allClassBookings.Any())
+            {
+                foreach (var booking in allClassBookings)
+                {
+                    await repository.DeleteAsync<Booking>(booking.Id);
+                }
+            }
+
             await repository.DeleteAsync<FitnessClass>(fitnessClassId);
             await repository.SaveChangesAsync();
         }
@@ -286,7 +310,7 @@ namespace FitnessApp.Services.Data
             var reviews = repository.AllReadOnly<Review>()
                 .Where(r => r.FitnessClassId == id)
                 .Include(f => f.FitnessClass)
-                .Include(r=>r.FitnessClass.Instructor.User)
+                .Include(r => r.FitnessClass.Instructor.User)
                 .Select(r => new ReviewViewModel()
                 {
                     InstructorFullName = r.FitnessClass.Instructor.User.FirstName + " " + r.FitnessClass.Instructor.User.LastName,
@@ -415,7 +439,7 @@ namespace FitnessApp.Services.Data
 
             foreach (var booking in bookings)
             {
-                await repository.DeleteAsync<Booking>(booking);
+                await repository.DeleteAsync<Booking>(booking.Id);
             }
 
             await repository.SaveChangesAsync();

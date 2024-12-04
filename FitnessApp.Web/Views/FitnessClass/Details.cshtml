@@ -6,66 +6,70 @@
     ViewBag.Title = "Fitness Class Details";
 }
 
-<h2 class="text-center">@ViewBag.Title</h2>
+<h2 class="text-center mb-4">@ViewBag.Title</h2>
 <hr />
 
-<div class="container" style="display:inline">
-    <div class="row">
-        <div class="col-8">
-            <p style="font-size:25px;"><u>@Model.Title</u></p>
-            <p>@Model.Description</p>
-            <p>Category: <b>@Model.Category</b></p>
-            <div class="form-inline">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Fitness Class Information -->
+            <div class="mb-4">
+                <p class="display-4 text-primary"><u>@Model.Title</u></p>
+                <p>@Model.Description</p>
+                <p><strong>Category:</strong> @Model.Category</p>
+            </div>
+
+            <div class="d-flex flex-wrap mb-4">
                 @if (this.User?.Identity?.IsAuthenticated == true)
                 {
-                    if (await fitnessClassService.HasInstructorWithIdAsync(Model.Id, User.Id())
-                    || User.IsAdmin())
+                    <!-- Edit/Delete/Cancel Actions (For Admin or Instructor) -->
+                    @if (await fitnessClassService.HasInstructorWithIdAsync(Model.Id, User.Id()) || User.IsAdmin())
                     {
-                        <a class="btn btn-warning" asp-controller="FitnessClass" asp-action="Edit"
-                           asp-route-fitnessClassId="@Model.Id">Edit</a>
-                        <a class="ml-2 btn btn-danger" asp-controller="FitnessClass" asp-action="Delete"
-                           asp-route-fitnessClassId="@Model.Id">Delete</a>
-                        if (Model.Status == "Active" || Model.Status == "Full")
+                        <a class="btn btn-warning mb-2 mb-md-0 mr-md-2" asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@Model.Id">Edit</a>
+                        <a class="btn btn-danger mb-2 mb-md-0 mr-md-2" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.Id">Delete</a>
+                        @if (Model.Status == "Active" || Model.Status == "Full")
                         {
-                            <a class="ml-2 btn btn-danger" asp-controller="FitnessClass" asp-action="CancelClass"
-                               asp-route-fitnessClassId="@Model.Id">CancelClass</a>
+                            <a class="btn btn-danger mb-2 mb-md-0 mr-md-2" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.Id">Cancel Class</a>
                         }
                     }
 
-                    if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
-                    && ((await instructorService.ExistsByUserIdAsync(User.Id())) == false || User.IsAdmin())
-                    && Model.Status == "Active")
+                    <!-- Booking/Unbooking Actions -->
+                    @if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
+                   && ((await instructorService.ExistsByUserIdAsync(User.Id())) == false || User.IsAdmin())
+                   && Model.Status == "Active")
                     {
-
-                        <form class="ml-2" asp-controller="FitnessClass"
-                              asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post">
-                            <input class="btn btn-primary" type="submit" value="Book Class" />
+                        <form asp-controller="FitnessClass" asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post" class="ml-2">
+                            <input class="btn btn-primary btn-lg" type="submit" value="Book Class" />
                         </form>
-
                     }
                     else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == true)
                     {
-                        <form class="ml-2" asp-controller="FitnessClass" asp-action="UnBook"
-                              asp-route-fitnessClassId="@Model.Id" method="post">
-                            <input class="btn btn-primary" type="submit" value="Cancel Booking" />
+                        <form asp-controller="FitnessClass" asp-action="UnBook" asp-route-fitnessClassId="@Model.Id" method="post" class="ml-2">
+                            <input class="btn btn-danger btn-lg" type="submit" value="Cancel Booking" />
                         </form>
                     }
+
+                    <!-- Review Button (For Finished Classes) -->
                     if (Model.Status == "Finished" && await fitnessClassService.UserHasReviewedClassAsync(User.Id(), Model.Id) == false)
                     {
-                        <a asp-controller="FitnessClass" asp-action="ReviewClass" asp-route-fitnessClassId="@Model.Id" class="btn btn-primary" role="button">Write review</a>
+                        <a asp-controller="FitnessClass" asp-action="ReviewClass" asp-route-fitnessClassId="@Model.Id" class="btn btn-success btn-lg">Write a Review</a>
                     }
-                }                
+                }
             </div>
-            <div class="card mb-2" style="width: 18rem;">
+
+            <!-- Instructor Info Card -->
+            <div class="card mb-4 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Instructor Info</h5>
-                    <p class="card-text">Name:  @Model.Instructor.FullName</p>
-                    <p class="card-text">Rating:  @Model.Instructor.Rating</p>
+                    <p class="card-text"><strong>Name:</strong> @Model.Instructor.FullName</p>
+                    <p class="card-text"><strong>Rating:</strong> @Model.Instructor.Rating</p>
                 </div>
             </div>
+
+            <!-- Reviews Section -->
             @if (Model.Reviews.Any())
             {
-                <div class="card">
+                <div class="card mb-4 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Reviews</h5>
                         @foreach (var review in Model.Reviews)

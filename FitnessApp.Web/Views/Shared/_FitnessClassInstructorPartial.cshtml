@@ -5,34 +5,25 @@
 @inject IFitnessClassService fitnessClassService
 
 <div class="col-md-4">
-    <div class="card mb-3">
+    <div class="card mb-3 h-100">
         <div class="card-body text-center">
-            <h5 class="card-title">Class Title</h5>
-            <p>@Model.Title</p>
-
-            <h5 class="card-title">Is Active</h5>
-            <p>@(Model.Status)</p>
-
-            <h5 class="card-title">Capacity</h5>
-            <p>@Model.LeftCapacity</p>
-
-            <h5 class="card-title">Start Time</h5>
-            <p>@Model.StartTime</p>
+            <h5 class="card-title" style="color: #28a745;">@Model.Title</h5>
+            <p>@Model.Status</p>
+            <p>Capacity Left: <b>@Model.LeftCapacity</b></p>
+            <p>Start Time: <b>@Model.StartTime</b></p>
 
             @if (User?.Identity?.IsAuthenticated == true)
             {
-                <a asp-controller="FitnessClass" asp-action="Details" asp-route-fitnessClassId="@Model.FitnessClassId" class="btn btn-primary" role="button">Details</a>
-                if (await fitnessClassService.HasInstructorWithIdAsync(Model.FitnessClassId, User.Id())
-                || User.IsAdmin())
+                <a asp-controller="FitnessClass" asp-action="Details" asp-route-fitnessClassId="@Model.FitnessClassId" class="btn btn-outline-success" role="button">Details</a>
+
+                @if (await fitnessClassService.HasInstructorWithIdAsync(Model.FitnessClassId, User.Id()) || User.IsAdmin())
                 {
-                    <a asp-area="" asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@Model.FitnessClassId"
-                       class="btn btn-warning">Edit</a>
-                    <a asp-area="" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.FitnessClassId"
-                       class="btn btn-danger">Delete</a>
-                    if (Model.Status == "Active" || Model.Status == "Full")
+                    <a asp-area="" asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@Model.FitnessClassId" class="btn btn-outline-warning">Edit</a>
+                    <a asp-area="" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.FitnessClassId" class="btn btn-outline-danger">Delete</a>
+
+                    @if (Model.Status == "Active" || Model.Status == "Full")
                     {
-                        <a asp-area="" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.FitnessClassId"
-                           class="btn btn-danger">Cancel Class</a>
+                        <a asp-area="" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.FitnessClassId" class="btn btn-outline-danger">Cancel Class</a>
                     }
                 }
             }

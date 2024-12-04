@@ -11,5 +11,8 @@
         <textarea id="Specializations" name="Specializations" class="form-control" required rows="5">@Model.Specializations</textarea>
     </div>
 
-    <button type="submit" class="btn btn-primary" asp-action="EditSpecializations" asp-controller="Instructor" asp-route-instructorId="@Model.Id">Save</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-warning btn-lg" asp-action="EditSpecializations" asp-controller="Instructor" asp-route-instructorId="@Model.Id">Save</button>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">Cancel</a>
+    </div>
 </form>

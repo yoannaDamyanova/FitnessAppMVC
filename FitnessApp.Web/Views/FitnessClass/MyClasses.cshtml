@@ -6,17 +6,16 @@
     ViewBag.Title = Localizer["Title"];
 }
 
-<h2 class="text-center">My Classes</h2>
+<h2 class="text-center mb-4">@Localizer["My Classes"]</h2>
 <hr />
 
-<h2>Thank you for choosing our class booking system!</h2>
-<h3>You are currently teaching @Model.TotalClassesCount classes.</h3>
-<h4>Here is your current rating: @Model.Rating.</h4>
+<h3 class="text-center">Thank you for choosing our class booking system!</h3>
+<p class="text-center">You are currently teaching <strong>@Model.TotalClassesCount</strong> classes.</p>
+<p class="text-center">Here is your current rating: <strong>@Model.Rating</strong>.</p>
 
-<div class="row">
+<div class="row justify-content-center">
     @foreach (var fitnessClass in Model.Classes)
     {
         <partial name="_FitnessClassInstructorPartial" model="@fitnessClass" />
     }
 </div>
-

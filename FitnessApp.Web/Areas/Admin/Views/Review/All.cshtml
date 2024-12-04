@@ -4,22 +4,56 @@
 }
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
+
 <div class="row">
     @foreach (var review in Model)
     {
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Review Details</h4>
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title">Review Details</h5>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Fitness Class: @review.FitnessClassTitle</h5>
+                    <h6 class="card-title">Fitness Class: <b>@review.FitnessClassTitle</b></h6>
                     <p class="card-text"><strong>Instructor:</strong> @review.InstructorFullName</p>
                     <p class="card-text"><strong>Rating:</strong> @review.Rating</p>
                     <p class="card-text"><strong>Reviewer:</strong> @review.ReviewerName</p>
                     <p class="card-text"><strong>Comments:</strong> @review.Comments</p>
+
+                    <!-- Optional View Details Button -->
+                    <a class="btn btn-custom btn-sm" href="#">View Details</a>
                 </div>
             </div>
         </div>
     }
 </div>
+
+<style>
+    /* Custom button styling */
+    .btn-custom {
+        background-color: #198754; /* Custom green shade */
+        color: white;
+        border: none;
+    }
+
+        .btn-custom:hover {
+            background-color: #145c32; /* Darker green on hover */
+        }
+
+    .card {
+        border-radius: 8px;
+    }
+
+    .card-header {
+        border-radius: 8px 8px 0 0;
+        text-align: center;
+    }
+
+    .card-body {
+        background-color: #f8f9fa;
+    }
+
+    .card-text {
+        margin-bottom: 10px;
+    }
+</style>

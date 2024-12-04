@@ -4,15 +4,31 @@
     ViewData["Title"] = "Cancel Fitness class";
 }
 
-<form asp-action="CancelClass" asp-controller="FitnessClass" method="post">
-    <h3>Are you sure you want to cancel this class?</h3>
-    <p class="mb-3">Title: <b>@Model.Title</b></p>
-    <p class="mb-3">StartTime: <b>@Model.StartTime</b></p>
+<div class="container">
+    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="CancelClass" asp-controller="FitnessClass" method="post" class="card p-4 shadow-lg">
+                <h4 class="text-center mb-4">Are you sure you want to cancel this class?</h4>
+                <div class="mb-3">
+                    <p><strong>Title:</strong> @Model.Title</p>
+                    <p><strong>Start Time:</strong> @Model.StartTime.ToString()</p>
+                </div>
 
-    <div class="form-group">
-        <input type="hidden" asp-for="@Model.Title" value="@Model.Title" />
-        <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
-        <input type="hidden" asp-for="@Model.StartTime" value="@Model.StartTime" />
-        <button type="submit" class="btn btn-primary">Cancel</button>
+                <div class="form-group">
+                    <input type="hidden" asp-for="@Model.Title" value="@Model.Title" />
+                    <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
+                    <input type="hidden" asp-for="@Model.StartTime" value="@Model.StartTime" />
+                </div>
+
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill shadow-sm w-50">Yes, Cancel Class</button>
+                </div>
+
+                <div class="form-group text-center mt-3">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary btn-lg rounded-pill shadow-sm w-50">No, Go Back</a>
+                </div>
+            </form>
+        </div>
     </div>
-</form>
+</div>

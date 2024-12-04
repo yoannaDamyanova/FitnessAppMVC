@@ -3,38 +3,67 @@
     ViewBag.Title = "All Users";
 }
 
-<h2 class="text-center">@ViewBag.Title</h2>
-<hr />
-<table class="table table-striped">
-    <thead>
+<h2 class="text-center mb-4">@ViewBag.Title</h2>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="bg-success text-white">
         <tr>
-            <th><label>Email</label></th>
-            <th><label>Full Name</label></th>
-            <th><label>User Is Instructor</label></th>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>User Is Instructor</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var user in Model)
         {
             <tr>
-                <td>
-                    <label>@user.Email</label>
-                </td>
-                <td>
-                    <label>@user.FullName</label>
-                </td>
-                <td>
+                <td>@user.Email</td>
+                <td>@user.FullName</td>
+                <td class="text-center">
                     @if (user.IsInstructor)
                     {
-                        <label>✔</label>
+                        <span class="text-success">✔</span> <!-- Green checkmark -->
                     }
                     else
                     {
-                        <label class="text-center">❌</label>
+                        <span class="text-danger">❌</span> <!-- Red cross -->
                     }
                 </td>
             </tr>
         }
-
     </tbody>
 </table>
+
+<style>
+    /* Styling for table headers */
+    .table thead {
+        background-color: #198754;
+        color: white;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-success {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+        .btn-success:hover {
+            background-color: #145c32;
+            border-color: #145c32;
+        }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .table-striped tbody tr:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e0f7e0;
+    }
+</style>

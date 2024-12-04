@@ -5,64 +5,70 @@
 @inject IFitnessClassService fitnessClassService
 
 <div class="col-md-4">
-    <div class="card mb-3">
-        <div class="card-body text-center">
-            <h5 class="card-title">Class Title</h5>
-            <p>@Model.Title</p>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <!-- Class Title -->
+            <h5 class="card-title text-center">@Model.Title</h5>
+            <p class="text-center text-muted">@Model.Status</p>
 
-            <h5 class="card-title">Status</h5>
-            <p>@Model.Status</p>
+            <!-- Class Details -->
+            <hr />
+            <div class="mb-3">
+                <h6 class="text-secondary">Duration</h6>
+                <p>@Model.Duration minutes</p>
+            </div>
 
-            <h5 class="card-title">Duration (Minutes)</h5>
-            <p>@Model.Duration</p>
+            <div class="mb-3">
+                <h6 class="text-secondary">Capacity</h6>
+                <p>@Model.Capacity</p>
+            </div>
 
-            <h5 class="card-title">Capacity</h5>
-            <p>@Model.Capacity</p>
+            <div class="mb-3">
+                <h6 class="text-secondary">Start Time</h6>
+                <p>@Model.StartTime.ToString()</p>
+            </div>
 
-            <h5 class="card-title">Start Time</h5>
-            <p>@Model.StartTime</p>
+            <!-- Instructor Info -->
+            <div class="mb-3">
+                <h6 class="text-secondary">Instructor</h6>
+                <a asp-controller="Instructor" asp-action="InstructorShowCase" asp-route-instructorId="@Model.InstructorId">@Model.InstructorFullName</a>
+            </div>
 
-            <h5 class="card-title">Instructor</h5>
-            <a asp-controller="Instructor" asp-action="InstructorShowCase" asp-route-instructorId="@Model.InstructorId">@Model.InstructorFullName</a>
-
+            <!-- Action Buttons for Authenticated Users -->
             @if (User?.Identity?.IsAuthenticated == true)
             {
-                <a asp-controller="FitnessClass" asp-action="Details" asp-route-fitnessClassId="@Model.Id" class="btn btn-primary" role="button">Details</a>        
-                if (await fitnessClassService.HasInstructorWithIdAsync(Model.Id, User.Id())
-                || User.IsAdmin())
-                {
-                    <a asp-area="" asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@Model.Id"
-                       class="btn btn-warning">Edit</a>
-                    <a asp-area="" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.Id"
-                       class="btn btn-danger">Delete</a>
-                    @if (Model.Status == "Active" || Model.Status == "Full")
+                <div class="d-grid gap-2">
+                    <a asp-controller="FitnessClass" asp-action="Details" asp-route-fitnessClassId="@Model.Id" class="btn btn-outline-primary">View Details</a>
+
+                    @if (await fitnessClassService.HasInstructorWithIdAsync(Model.Id, User.Id()) || User.IsAdmin())
                     {
-                        <a asp-area="" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.Id"
-                           class="btn btn-danger">Cancel class</a>
+                        <a asp-area="" asp-controller="FitnessClass" asp-action="Edit" asp-route-fitnessClassId="@Model.Id" class="btn btn-warning">Edit</a>
+                        <a asp-area="" asp-controller="FitnessClass" asp-action="Delete" asp-route-fitnessClassId="@Model.Id" class="btn btn-danger">Delete</a>
+
+                        @if (Model.Status == "Active" || Model.Status == "Full")
+                        {
+                            <a asp-area="" asp-controller="FitnessClass" asp-action="CancelClass" asp-route-fitnessClassId="@Model.Id" class="btn btn-danger">Cancel Class</a>
+                        }
                     }
-                }
-                if (await instructorService.ExistsByUserIdAsync(User.Id()) == false
-                && User.IsAdmin() == false
-                && await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
-                && Model.Status == "Active"
-                && Model.Status != "Full")
-                {
-                    <form class="input-group-sm" asp-controller="FitnessClass"
-                          asp-area="" asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post">
-                        <input class="btn btn-primary" type="submit" value="Book" />
-                    </form>
-                }
-                else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == true)
-                {
-                    <form asp-area="" asp-controller="FitnessClass" asp-action="UnBook"
-                          asp-route-fitnessClassId="@Model.Id" method="post">
-                        <input class="btn btn-primary" type="submit" value="Cancel Booking" />
-                    </form>
-                }
-                if (Model.Status == "Finished" && await fitnessClassService.UserHasReviewedClassAsync(User.Id(), Model.Id) == false)
-                {
-                    <a asp-controller="FitnessClass" asp-action="ReviewClass" asp-route-fitnessClassId="@Model.Id" class="btn btn-primary" role="button">Write review</a>
-                }
+
+                    @if (await instructorService.ExistsByUserIdAsync(User.Id()) == false && User.IsAdmin() == false && await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false && Model.Status == "Active")
+                    {
+                        <form asp-controller="FitnessClass" asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post">
+                            <input class="btn btn-success w-100" type="submit" value="Book Now" />
+                        </form>
+                    }
+                    else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == true)
+                    {
+                        <form asp-controller="FitnessClass" asp-action="UnBook" asp-route-fitnessClassId="@Model.Id" method="post">
+                            <input class="btn btn-warning w-100" type="submit" value="Cancel Booking" />
+                        </form>
+                    }
+
+                    @if (Model.Status == "Finished" && await fitnessClassService.UserHasReviewedClassAsync(User.Id(), Model.Id) == false)
+                    {
+                        <a asp-controller="FitnessClass" asp-action="ReviewClass" asp-route-fitnessClassId="@Model.Id" class="btn btn-info w-100">Write Review</a>
+                    }
+                </div>
             }
         </div>
     </div>

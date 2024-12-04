@@ -1,16 +1,18 @@
 ﻿@model ReviewViewModel
 
-<div class="row">
+<div class="row my-4">
     <div class="col-md-6">
-        <h4>Comment</h4>
-        <p>@Model.Comments</p>
+        <h4 class="text-success">Comment</h4>
+        <p class="border p-3 bg-light rounded">@Model.Comments</p>
     </div>
+
     <div class="col-md-2">
-        <h4>Rating</h4>
-        <p>@Model.Rating</p>
+        <h4 class="text-warning">Rating</h4>
+        <p class="border p-3 bg-light rounded"><strong>@Model.Rating</strong> / 5</p>
     </div>
+
     <div class="col-md-4">
-        <h4>Author</h4>
-        <p>@Model.ReviewerName</p>
+        <h4 class="text-primary">Author</h4>
+        <p class="font-weight-bold">@Model.ReviewerName</p>
     </div>
 </div>

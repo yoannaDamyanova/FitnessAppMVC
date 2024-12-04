@@ -1,12 +1,23 @@
 ﻿@model FitnessClassFormModel
+
 @{
-    ViewData["Title"] = "Edit Fitness class";
+    ViewData["Title"] = "Edit Fitness Class";
 }
 
-<h2 class="text-center">@ViewData["Title"]</h2>
+<h2 class="text-center mb-4">@ViewData["Title"]</h2>
 <hr />
 
-<partial name="_FitnessClassFormPartial" model="@Model" />
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <partial name="_FitnessClassFormPartial" model="@Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

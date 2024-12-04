@@ -2,17 +2,44 @@
 @inject IFitnessClassService fitnessClassService
 @inject IInstructorService instructorService
 
-<div class="col-md-4">
-    <div class="card mb-3">
-        <h3>@Model.Title</h3>
+<div class="col-md-4 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h4 class="card-title">@Model.Title</h4>
+        </div>
         <div class="card-body text-center">
-            <h4>@Model.Title</h4>
-            <h6>Capacity: <b>@Model.Capacity</b></h6>
-            <br />
-            <form class="input-group-sm" asp-controller="FitnessClass"
-                  asp-area="Admin" asp-action="Approve" asp-route-fitnessClassId="@Model.Id" method="post">
-                <input class="btn btn-success" type="submit" value="Approve" />
+            <h5>Capacity: <b>@Model.Capacity</b></h5>
+            <hr />
+            <form asp-controller="FitnessClass" asp-area="Admin" asp-action="Approve" asp-route-fitnessClassId="@Model.Id" method="post">
+                <input class="btn btn-custom btn-lg" type="submit" value="Approve" />
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    /* Custom button styling for consistency with theme */
+    .btn-custom {
+        background-color: #198754; /* Custom green shade */
+        color: white;
+        border: none;
+        width: 100%;
+    }
+
+        .btn-custom:hover {
+            background-color: #145c32; /* Darker green on hover */
+        }
+
+    .card {
+        border-radius: 8px;
+    }
+
+    .card-header {
+        border-radius: 8px 8px 0 0;
+        text-align: center;
+    }
+
+    .card-body {
+        background-color: #f8f9fa;
+    }
+</style>
