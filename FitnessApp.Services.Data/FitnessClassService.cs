@@ -9,6 +9,7 @@ using FitnessApp.Web.Infrastructure.Enumerations;
 using FitnessApp.Web.ViewModels.Instructor;
 using FitnessApp.Web.ViewModels.Review;
 using FitnessApp.Web.ViewModels.Booking;
+using System.Text.RegularExpressions;
 
 namespace FitnessApp.Services.Data
 {
@@ -360,7 +361,7 @@ namespace FitnessApp.Services.Data
                     Title = fc.Title,
                     Description = fc.Description,
                     CategoryId = fc.CategoryId,
-                    StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
+                    StartTime = Regex.Replace(fc.StartTime.ToString("dd/MM/yyyy HH:mm"), @"\.", "/"),
                     Duration = fc.Duration,
                     Capacity = fc.Capacity,
                 })

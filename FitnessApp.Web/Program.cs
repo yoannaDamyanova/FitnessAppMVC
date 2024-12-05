@@ -54,7 +54,7 @@ namespace FitnessApp.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error/500");
+                app.UseExceptionHandler("/Home/Error");
                 app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
                 app.UseHsts();
             }
@@ -62,7 +62,7 @@ namespace FitnessApp.Web
             app.UseHttpsRedirection();
             app.UseRequestLocalization();
             app.UseStaticFiles();
-
+            
             app.UseRouting();
 
             app.UseAuthentication();
