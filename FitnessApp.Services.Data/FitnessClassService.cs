@@ -53,7 +53,7 @@ namespace FitnessApp.Services.Data
         public async Task<FitnessClassQueryServiceModel> AllAsync(string? category = null,
             string? status = null,
             string? searchTerm = null,
-            FitnessClassSorting sorting = FitnessClassSorting.Newest,
+            FitnessClassSorting sorting = FitnessClassSorting.StartTime,
             int currentPage = 1,
             int classesPerPage = 1)
         {
@@ -98,6 +98,7 @@ namespace FitnessApp.Services.Data
             {
                 FitnessClassSorting.Duration => classesToShow.OrderBy(c => c.Duration),
                 FitnessClassSorting.StartTime => classesToShow.OrderBy(c => c.StartTime),
+                FitnessClassSorting.Capacity => classesToShow.OrderBy(c => c.Capacity),
                 _ => classesToShow.OrderByDescending(c => c.Id),
             };
 

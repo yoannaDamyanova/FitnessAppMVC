@@ -23,7 +23,7 @@ namespace FitnessApp.Services.Data.Contracts
             string? category = null,
             string? status = null,
             string? searchTerm = null,
-            FitnessClassSorting sorting = FitnessClassSorting.Newest,
+            FitnessClassSorting sorting = FitnessClassSorting.StartTime,
             int currentPage = 1,
             int housesPerPage = 1);
 

@@ -26,6 +26,15 @@
                         <a class="nav-link text-white btn btn-success rounded-pill px-4 py-2" asp-area="" asp-controller="Instructor" asp-action="Become">Become Instructor</a>
                     </li>
                 }
+                else if (await instructorService.ExistsByUserIdAsync(User.Id()) == true)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white btn btn-success rounded-pill px-4 py-2" asp-area="" 
+                        asp-controller="Instructor" 
+                        asp-action="InstructorShowCase" 
+                        asp-route-instructorId="@await instructorService.GetInstructorIdByUserId(User.Id())">My Board</a>
+                    </li>
+                }
 
                 <li class="nav-item">
                     <a class="nav-link text-white btn btn-success rounded-pill px-4 py-2" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @userName!</a>

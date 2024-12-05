@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = Localizer["NotFoundTitle"];
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="alert alert-danger">
+    <h4 class="alert-heading">@Localizer["NotFoundHeader"]</h4>
+    <p>@Localizer["NotFoundMessage"]</p>
+    <hr />
+    <p class="mb-0">@Localizer["NotFoundSolution"]</p>
+</div>
+
+<div class="text-center">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-success btn-lg fw-bold text-white rounded-pill px-5 py-3 shadow-lg">
+        @Localizer["GoHome"]
+    </a>
+</div>

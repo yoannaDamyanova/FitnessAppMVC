@@ -28,5 +28,7 @@ namespace FitnessApp.Services.Data.Contracts
 
         public Task EditBiographyAsync(InstructorEditBiographyFormModel model, int instructorId);
         public Task EditSpecializationsAsync(InstructorEditSpecializationsFormModel model, int instructorId);
+
+        Task<int> GetInstructorIdByUserId(string userId);
     }
 }

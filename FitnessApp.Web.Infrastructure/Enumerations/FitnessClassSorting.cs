@@ -8,10 +8,8 @@ namespace FitnessApp.Web.Infrastructure.Enumerations
 {
     public enum FitnessClassSorting
     {
-        Newest = 0,
-        Active = 1,
-        Canceled= 2,
-        Duration = 3,
-        StartTime = 4
+        Duration = 1,
+        StartTime = 2,
+        Capacity = 3
     }
 }

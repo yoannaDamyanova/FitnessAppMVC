@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = Localizer["UnauthorizedTitle"];
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="alert alert-warning">
+    <h4 class="alert-heading">@Localizer["UnauthorizedHeader"]</h4>
+    <p>@Localizer["UnauthorizedMessage"]</p>
+    <hr />
+    <p class="mb-0">@Localizer["UnauthorizedSolution"]</p>
+</div>
+
+<div class="text-center">
+    <a href="@Url.Action("Login", "Account")" class="btn btn-success btn-lg fw-bold text-white rounded-pill px-5 py-3 shadow-lg">
+        @Localizer["Login"]
+    </a>
+</div>

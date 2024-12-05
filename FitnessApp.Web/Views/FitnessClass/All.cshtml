@@ -44,7 +44,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label asp-for="SearchTerm">@Localizer["SearchTerm"]</label>
-                <input asp-for="SearchTerm" class="form-control" placeholder="@Localizer["SearchPlaceholder"]" />
+                <input asp-for="SearchTerm" class="form-control" placeholder="@Localizer["SearchBy"]" />
             </div>
         </div>
 
@@ -53,8 +53,9 @@
             <div class="form-group">
                 <label asp-for="Sorting">@Localizer["Sorting"]</label>
                 <select asp-for="Sorting" class="form-control">
-                    <option value="2">@Localizer["Duration"]</option>
-                    <option value="3">@Localizer["StartTime"]</option>
+                    <option value="1">@Localizer["Duration"]</option>
+                    <option value="2">@Localizer["StartTime"]</option>
+                    <option value="3">@Localizer["Capacity"]</option>
                 </select>
             </div>
         </div>

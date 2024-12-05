@@ -179,5 +179,13 @@ namespace FitnessApp.Services.Data
 
             return false;
         }
+
+        public async Task<int> GetInstructorIdByUserId(string userId)
+        {
+            Instructor instructor = await repository.AllReadOnly<Instructor>()
+                .FirstOrDefaultAsync(i => i.UserId == userId);
+
+            return instructor.Id;
+        }
     }
 }

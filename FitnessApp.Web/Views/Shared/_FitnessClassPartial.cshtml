@@ -64,7 +64,10 @@
                         </form>
                     }
 
-                    @if (Model.Status == "Finished" && await fitnessClassService.UserHasReviewedClassAsync(User.Id(), Model.Id) == false)
+                    @if (Model.Status == "Finished" 
+                        && await fitnessClassService.UserHasReviewedClassAsync(User.Id(), Model.Id) == false
+                        && User.IsAdmin()==false
+                        && await instructorService.ExistsByUserIdAsync(User.Id()) == false)
                     {
                         <a asp-controller="FitnessClass" asp-action="ReviewClass" asp-route-fitnessClassId="@Model.Id" class="btn btn-info w-100">Write Review</a>
                     }

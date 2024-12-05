@@ -2,6 +2,7 @@
 using FitnessApp.Web.Attributes;
 using FitnessApp.Web.Extensions;
 using FitnessApp.Web.ViewModels.Instructor;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static FitnessApp.Common.ErrorMessageConstants;
 
@@ -68,6 +69,8 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        [MustBeInstructor]
         public async Task<IActionResult> EditBiography(int instructorId)
         {
             if (await instructorService.ExistsByIdAsync(instructorId) == false)
@@ -87,6 +90,8 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        [MustBeInstructor]
         public async Task<IActionResult> EditBiography(int instructorId, InstructorEditBiographyFormModel model)
         {
             if (await instructorService.ExistsByIdAsync(instructorId) == false)
@@ -96,10 +101,12 @@ namespace FitnessApp.Web.Controllers
 
             await instructorService.EditBiographyAsync(model, instructorId);
 
-            return RedirectToAction("InstructorShowCase", "Instructor", instructorId);
+            return RedirectToAction("All", "FitnessClass");
         }
 
         [HttpGet]
+        [Authorize]
+        [MustBeInstructor]
         public async Task<IActionResult> EditSpecializations(int instructorId)
         {
             if (await instructorService.ExistsByIdAsync(instructorId) == false)
@@ -119,6 +126,8 @@ namespace FitnessApp.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        [MustBeInstructor]
         public async Task<IActionResult> EditSpecializations(int instructorId, InstructorEditSpecializationsFormModel model)
         {
             if (await instructorService.ExistsByIdAsync(instructorId) == false)
