@@ -38,13 +38,9 @@ namespace FitnessApp.Services.Data
                 Duration = model.Duration,
                 Capacity = model.Capacity,
                 LeftCapacity = model.Capacity,
-                IsApproved = false
+                IsApproved = false,
+                StatusId = 1
             };
-
-            var statuses = AllStatuses();
-            Status status = statuses.FirstOrDefault(s => s.Name == "Active");
-
-            fitnessClass.StatusId = status.Id;
 
             await repository.AddAsync(fitnessClass);
             await repository.SaveChangesAsync();
@@ -438,10 +434,12 @@ namespace FitnessApp.Services.Data
                 .Where(b => b.FitnessClassId == fitnessClassId)
                 .ToListAsync();
 
-
-            foreach (var booking in bookings)
+            if (bookings.Any())
             {
-                await repository.DeleteAsync<Booking>(booking.Id);
+                foreach (var booking in bookings)
+                {
+                    await repository.DeleteAsync<Booking>(booking.Id);
+                }
             }
 
             await repository.SaveChangesAsync();
