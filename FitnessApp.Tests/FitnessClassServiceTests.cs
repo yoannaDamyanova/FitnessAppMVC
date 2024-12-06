@@ -77,5 +77,148 @@ namespace FitnessApp.Tests
             )), Times.Once);
             repositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
+
+        [Test]
+        public async Task AllAsync_ShouldFilterByCategory()
+        {
+            // Arrange
+            var category = "Yoga";
+            var fitnessClasses = new List<FitnessClass>
+            {
+                new FitnessClass
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Morning Yoga",
+                    Description = "A refreshing yoga session to start your day.",
+                    CategoryId = 1,
+                    StatusId = 1, // Active
+                    InstructorId = 1,
+                    StartTime = DateTime.Now.AddMinutes(45),
+                    Duration = 60, // 1 hour
+                    Capacity = 20,
+                    LeftCapacity = 15,
+                    IsApproved = true,
+                    // Navigation properties
+                    Category = new Category { Id = 1, Name = "Yoga" },
+                    Status = new Status { Id = 1, Name = "Active" },
+                    Instructor = new Instructor
+                    {
+                        Id = 1,
+                        User = new ApplicationUser { FirstName = "John", LastName = "Doe" }
+                    }
+                },
+                new FitnessClass
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Evening Pilates",
+                    Description = "A relaxing pilates session to unwind your day.",
+                    CategoryId = 2,
+                    StatusId = 2, // Canceled
+                    InstructorId = 2,
+                    StartTime = DateTime.Now.AddDays(2),
+                    Duration = 90, // 1.5 hours
+                    Capacity = 25,
+                    LeftCapacity = 0,
+                    IsApproved = true,
+                    // Navigation properties
+                    Category = new Category { Id = 2, Name = "Pilates" },
+                    Status = new Status { Id = 2, Name = "Canceled" },
+                    Instructor = new Instructor
+                    {
+                        Id = 2,
+                        User = new ApplicationUser { FirstName = "Jane", LastName = "Smith" }
+                    }
+                }
+            }.AsQueryable();
+
+            repositoryMock
+                .Setup(r => r.AllReadOnly<FitnessClass>())
+                .Returns(fitnessClasses);
+
+            // Act
+            var result = await service.AllAsync(category: category);
+
+            // Assert
+            Assert.AreEqual(1, result.TotalClassesCount);
+            Assert.AreEqual("Morning Yoga", result.FitnessClasses.First().Title);
+        }
+
+        [Test]
+        public async Task AllBookedByUserId_ValidUser_ReturnsBookedClasses()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+
+            var users = new List<ApplicationUser>
+            {
+                new ApplicationUser
+                {
+                    Id = userId.ToString(),
+                    FirstName = "Jane",
+                    LastName = "Doe"
+                }
+            };
+
+                    var fitnessClasses = new List<FitnessClass>
+            {
+                new FitnessClass
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Morning Yoga",
+                    StartTime = new DateTime(2023, 01, 01, 08, 00, 00),
+                    Duration = 60,
+                    Capacity = 20,
+                    LeftCapacity = 15,
+                    Status = new Status { Id = 1, Name = "Active" },
+                    StatusId = 1,
+                    Instructor = new Instructor
+                    {
+                        User = new ApplicationUser
+                        {
+                            FirstName = "John",
+                            LastName = "Smith"
+                        }
+                    }
+                }
+            };
+
+            var bookings = new List<Booking>
+            {
+                new Booking
+                {
+                    Id = 1,
+                    User = users.First(),
+                    UserId = userId.ToString(),
+                    FitnessClassId = fitnessClasses.First().Id,
+                    FitnessClass = fitnessClasses.First(),
+                    BookingDate = DateTime.Now
+                }
+            };
+
+            repositoryMock
+                .Setup(r => r.GetByIdAsync<ApplicationUser>(userId.ToString()))
+                .ReturnsAsync(new ApplicationUser
+                {
+                    Id = userId.ToString(),
+                    FirstName = "Jane",
+                    LastName = "Doe"
+                });
+
+            repositoryMock
+                .Setup(r => r.AllReadOnly<Booking>())
+                .Returns(bookings.AsQueryable());
+
+            // Act
+            var result = await service.AllBookedByUserId(userId.ToString());
+
+            // Assert
+            Assert.AreEqual(1, result.Count());
+            var bookedClass = result.First();
+            Assert.AreEqual(fitnessClasses.First().Title, bookedClass.Title);
+            Assert.AreEqual(fitnessClasses.First().Status.Name, bookedClass.Status);
+            Assert.AreEqual("John Smith", bookedClass.InstructorFullName);
+            Assert.AreEqual("01/01/2023 08:00", bookedClass.StartTime);
+        }
+
     }
 }

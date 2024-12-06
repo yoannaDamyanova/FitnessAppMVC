@@ -33,20 +33,33 @@
                         }
                     }
 
-                    <!-- Booking/Unbooking Actions -->
-                    @if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false
-                   && ((await instructorService.ExistsByUserIdAsync(User.Id())) == false || User.IsAdmin())
-                   && Model.Status == "Active")
+                    @if (await instructorService.ExistsByUserIdAsync(User.Id()) == false
+                        && User.IsAdmin() == false)
                     {
-                        <form asp-controller="FitnessClass" asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post" class="ml-2">
-                            <input class="btn btn-primary btn-lg" type="submit" value="Book Class" />
-                        </form>
-                    }
-                    else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == true)
-                    {
-                        <form asp-controller="FitnessClass" asp-action="UnBook" asp-route-fitnessClassId="@Model.Id" method="post" class="ml-2">
-                            <input class="btn btn-danger btn-lg" type="submit" value="Cancel Booking" />
-                        </form>
+                        @if (Model.Status == "Active")
+                        {
+                            @if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()) == false)
+                            {
+                                <form asp-controller="FitnessClass" asp-action="Book" asp-route-fitnessClassId="@Model.Id" method="post" class="ml-2">
+                                    <input class="btn btn-primary btn-lg" type="submit" value="Book Class" />
+                                </form>
+                            }
+                            else if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()))
+                            {
+                                <form asp-controller="FitnessClass" asp-action="UnBook" asp-route-fitnessClassId="@Model.Id" method="post" class="ml-2">
+                                    <input class="btn btn-danger btn-lg" type="submit" value="Cancel Booking" />
+                                </form>
+                            }
+                        }
+                        else if (Model.Status == "Full")
+                        {
+                            @if (await fitnessClassService.IsBookedByIUserWithIdAsync(Model.Id, User.Id()))
+                            {
+                                <form asp-controller="FitnessClass" asp-action="UnBook" asp-route-fitnessClassId="@Model.Id" method="post" class="ml-2">
+                                    <input class="btn btn-danger btn-lg" type="submit" value="Cancel Booking" />
+                                </form>
+                            }
+                        }
                     }
 
                     <!-- Review Button (For Finished Classes) -->

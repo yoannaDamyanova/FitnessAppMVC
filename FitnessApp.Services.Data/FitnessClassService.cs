@@ -55,30 +55,34 @@ namespace FitnessApp.Services.Data
             int classesPerPage = 1)
         {
             var classesToShow = repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.IsApproved == true); //add approved by admin
+                .Where(fc => fc.IsApproved == true)
+                .Include(fc => fc.Instructor.User)
+                .Include(fc => fc.Category)
+                .Include(fc => fc.Status)
+                .ToList();
 
             if (category != null)
             {
-                classesToShow = classesToShow.Where(c => c.Category.Name == category);
+                classesToShow = classesToShow.Where(c => c.Category.Name == category).ToList();
             }
 
             if (status != null)
             {
                 if (status == "Active")
                 {
-                    classesToShow = classesToShow.Where(c => c.StatusId == 1);
+                    classesToShow = classesToShow.Where(c => c.StatusId == 1).ToList();
                 }
                 else if (status == "Canceled")
                 {
-                    classesToShow = classesToShow.Where(c => c.StatusId == 2);
+                    classesToShow = classesToShow.Where(c => c.StatusId == 2).ToList();
                 }
                 else if (status == "Finished")
                 {
-                    classesToShow = classesToShow.Where(c => c.StatusId == 3);
+                    classesToShow = classesToShow.Where(c => c.StatusId == 3).ToList();
                 }
                 else if (status == "Full")
                 {
-                    classesToShow = classesToShow.Where(c => c.StatusId == 4);
+                    classesToShow = classesToShow.Where(c => c.StatusId == 4).ToList();
                 }
             }
 
@@ -88,20 +92,18 @@ namespace FitnessApp.Services.Data
                 classesToShow = classesToShow
                     .Where(c => (c.Title.ToLower().Contains(normalizedSearchTerm)) ||
                                 c.Duration.ToString().Contains(normalizedSearchTerm) ||
-                                c.Capacity.ToString().Contains(normalizedSearchTerm));
+                                c.Capacity.ToString().Contains(normalizedSearchTerm)).ToList();
             }
 
             classesToShow = sorting switch
             {
-                FitnessClassSorting.Duration => classesToShow.OrderBy(c => c.Duration),
-                FitnessClassSorting.StartTime => classesToShow.OrderBy(c => c.StartTime),
-                FitnessClassSorting.Capacity => classesToShow.OrderBy(c => c.Capacity),
-                _ => classesToShow.OrderByDescending(c => c.Id),
+                FitnessClassSorting.Duration => classesToShow.OrderBy(c => c.Duration).ToList(),
+                FitnessClassSorting.StartTime => classesToShow.OrderBy(c => c.StartTime).ToList(),
+                FitnessClassSorting.Capacity => classesToShow.OrderBy(c => c.Capacity).ToList(),
+                _ => classesToShow.OrderByDescending(c => c.Id).ToList(),
             };
 
-            IEnumerable<Status> statuses = AllStatuses();
-
-            var classes = await classesToShow
+            var classes = classesToShow
                 .Skip((currentPage - 1) * classesPerPage)
                 .Take(classesPerPage)
                 .Select(c => new FitnessClassServiceModel
@@ -110,13 +112,13 @@ namespace FitnessApp.Services.Data
                     Title = c.Title,
                     Duration = c.Duration,
                     Capacity = c.LeftCapacity,
-                    Status = statuses.Where(s => s.Id == c.StatusId).Select(s => s.Name).First(),
+                    Status = c.Status.Name,
                     InstructorFullName = c.Instructor.User.FirstName + " " + c.Instructor.User.LastName,
                     StartTime = c.StartTime.ToString("dd/MM/yyyy HH:mm"),
                     InstructorId = c.InstructorId,
-                }).ToListAsync();
+                }).ToList();
 
-            int totalClasses = await classesToShow.CountAsync();
+            int totalClasses = classesToShow.Count;
 
             return new FitnessClassQueryServiceModel()
             {
@@ -134,8 +136,11 @@ namespace FitnessApp.Services.Data
                 throw new UnauthorizedAccessException("No such user exists!");
             }
 
-            var bookings = await repository.AllReadOnly<Booking>()
-                .ToListAsync();
+            var bookings = repository.AllReadOnly<Booking>()
+                .Include(b => b.User)
+                .Include(b => b.FitnessClass.Status)
+                .Include(b => b.FitnessClass.Instructor.User)
+                .ToList();
 
             List<FitnessClassServiceModel> bookedClasses = new List<FitnessClassServiceModel>();
 
@@ -143,9 +148,8 @@ namespace FitnessApp.Services.Data
             {
                 if (booking.UserId == userId)
                 {
-                    var fc = await repository.GetByIdAsync<FitnessClass>(booking.FitnessClassId);
-                    var instructor = await repository.GetByIdAsync<Instructor>(fc.InstructorId);
-                    var instructorUser = await repository.GetByIdAsync<ApplicationUser>(instructor.UserId);
+                    var fc = booking.FitnessClass;
+                    var instructorUser = booking.FitnessClass.Instructor.User;
 
                     if (fc.StartTime < DateTime.Now)
                     {
@@ -158,9 +162,9 @@ namespace FitnessApp.Services.Data
                         Title = fc.Title,
                         Duration = fc.Duration,
                         Capacity = fc.LeftCapacity,
-                        Status = AllStatuses().Where(s => s.Id == fc.StatusId).Select(s => s.Name).First(),
+                        Status = fc.Status.Name,
                         InstructorFullName = instructorUser.FirstName + " " + instructorUser.LastName,
-                        StartTime = fc.StartTime.ToString(),
+                        StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
                     });
                 }
             }
@@ -202,7 +206,6 @@ namespace FitnessApp.Services.Data
 
         public async Task BookAsync(Guid id, string userId)
         {
-
             var fitnessClass = await repository.GetByIdAsync<FitnessClass>(id);
             var user = await repository.GetByIdAsync<ApplicationUser>(userId);
 
@@ -302,8 +305,8 @@ namespace FitnessApp.Services.Data
 
         public async Task<FitnessClassDetailsServiceModel> FitnessClassDetailsByIdAsync(Guid id)
         {
-            var fitnessClass = repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.Id == id);
+            var fitnessClass = await repository.AllReadOnly<FitnessClass>()
+                .FirstOrDefaultAsync(fc => fc.Id == id);
 
             var reviews = repository.AllReadOnly<Review>()
                 .Where(r => r.FitnessClassId == id)
@@ -319,6 +322,9 @@ namespace FitnessApp.Services.Data
                 })
                 .ToList();
 
+            var statuses = AllStatuses();
+
+            var status = statuses.FirstOrDefault(s => s.Id == fitnessClass.StatusId).Name;
 
             return await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Id == id)
@@ -337,7 +343,8 @@ namespace FitnessApp.Services.Data
                         Rating = fc.Instructor.Rating,
                         FullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName
                     },
-                    InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName
+                    InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName,
+                    Status = status
                 })
                 .FirstAsync();
         }

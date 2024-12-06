@@ -108,7 +108,7 @@ namespace FitnessApp.Services.Data
             var instructor = await GetByIdAsync(userId);
 
             var instructorClasses = await repository.AllReadOnly<FitnessClass>()
-                .Where(fc => fc.InstructorId == instructor.Id)
+                .Where(fc => fc.InstructorId == instructor.Id && fc.IsApproved == true)
                 .Include(fc => fc.Instructor.User)
                 .Include(fc => fc.Status)
                 .Select(fc => new FitnessClassServiceModel()
