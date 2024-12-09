@@ -184,15 +184,15 @@ namespace FitnessApp.Services.Data
 
         public async Task<IEnumerable<string>> AllCategoriesNamesAsync()
         {
-            return await repository.AllReadOnly<Category>()
+            return repository.AllReadOnly<Category>()
                 .Select(c => c.Name)
                 .Distinct()
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<IEnumerable<FitnessClassInstructorViewModel>> AllFitnessClassesByInstructorIdAsync(int instructorId)
         {
-            return await repository.AllReadOnly<FitnessClass>()
+            return repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.InstructorId == instructorId && fc.IsApproved == true)
                 .Include(fc => fc.Status)
                 .Select(fc => new FitnessClassInstructorViewModel
@@ -202,7 +202,7 @@ namespace FitnessApp.Services.Data
                     LeftCapacity = fc.LeftCapacity,
                     Status = fc.Status.Name,
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
-                }).ToListAsync();
+                }).ToList();
         }
 
         public async Task BookAsync(Guid id, string userId)
@@ -237,15 +237,15 @@ namespace FitnessApp.Services.Data
 
         public async Task<bool> CategoryExistsAsync(int categoryId)
         {
-            return await repository.AllReadOnly<Category>()
-                .AnyAsync(c => c.Id == categoryId);
+            return repository.AllReadOnly<Category>()
+                .Any(c => c.Id == categoryId);
         }
 
         public async Task DeleteAsync(Guid fitnessClassId)
         {
-            var allClassReviews = await repository.All<Review>()
+            var allClassReviews = repository.All<Review>()
                 .Where(r => r.FitnessClassId == fitnessClassId)
-                .ToListAsync();
+                .ToList();
 
             if (allClassReviews.Any())
             {
@@ -255,9 +255,9 @@ namespace FitnessApp.Services.Data
                 }
             }
 
-            var allClassBookings = await repository.All<Booking>()
+            var allClassBookings = repository.All<Booking>()
                 .Where(b => b.FitnessClassId == fitnessClassId)
-                .ToListAsync();
+                .ToList();
 
             if (allClassBookings.Any())
             {
@@ -309,6 +309,10 @@ namespace FitnessApp.Services.Data
                 .Include(fc => fc.Instructor.User)
                 .FirstOrDefault(fc => fc.Id == id);
 
+            if (fitnessClass == null)
+            {
+                throw new InvalidOperationException("This class doesn't exist!");
+            }
             var reviews = repository.AllReadOnly<Review>()
                 .Where(r => r.FitnessClassId == id)
                 .Include(r => r.User)

@@ -18,10 +18,10 @@ namespace FitnessApp.Services.Data
             // Manually set the file path
             var projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\"));
 
-            // Now combine this with the relative path to "FitnessApp.Services.Data\Licenses"
+            // combines this with the relative path to "FitnessApp.Services.Data\Licenses"
             _filePath = Path.Combine(
-                projectRoot,                          // This points to the root of your project
-                "FitnessApp.Services.Data",           // Your sub-directory
+                projectRoot,                          // points to the root of your project
+                "FitnessApp.Services.Data",           // sub-directory
                 "Licenses",                           // The "Licenses" folder
                 "localLicenseNumbers.json"            // The target JSON file
             );

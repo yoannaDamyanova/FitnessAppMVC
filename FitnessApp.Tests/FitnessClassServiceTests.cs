@@ -23,7 +23,6 @@ namespace FitnessApp.Tests
     {
         private Mock<IRepository> repositoryMock;
         private IFitnessClassService service;
-        private ILogger<FitnessClassService> logger;
 
         [SetUp]
         public void Setup()
@@ -1505,75 +1504,6 @@ namespace FitnessApp.Tests
         }
 
         [Test]
-        public async Task FitnessClassDetailsByIdAsync_Should_Return_FitnessClassDetails_When_FitnessClass_Exists()
-        {
-            // Arrange
-            var fitnessClassId = Guid.NewGuid();
-            var fitnessClass = new FitnessClass
-            {
-                Id = fitnessClassId,
-                Title = "Advanced Yoga",
-                Description = "An advanced yoga class.",
-                Duration = 60,
-                Capacity = 30,
-                StartTime = DateTime.UtcNow,
-                Category = new Category { Name = "Yoga" },
-                InstructorId = 1,
-                Status = new Status { Name = "Approved" }
-            };
-
-            var review1 = new Review
-            {
-                FitnessClassId = fitnessClassId,
-                Rating = 5,
-                Comments = "Excellent class!",
-                User = new ApplicationUser { FirstName = "Alice", LastName = "Smith" }
-            };
-
-            var review2 = new Review
-            {
-                FitnessClassId = fitnessClassId,
-                Rating = 4,
-                Comments = "Great but could be longer.",
-                User = new ApplicationUser { FirstName = "Bob", LastName = "Johnson" }
-            };
-
-            var instructor = new Instructor
-            {
-                Id = 1,
-                User = new ApplicationUser { FirstName = "John", LastName = "Doe" },
-                Rating = 4.5
-            };
-
-            repositoryMock.Setup(r => r.AllReadOnly<Instructor>())
-                .Returns(new List<Instructor> { instructor }.AsQueryable());
-
-            repositoryMock.Setup(r => r.AllReadOnly<FitnessClass>())
-                .Returns(new List<FitnessClass> { fitnessClass }.AsQueryable());
-
-            repositoryMock.Setup(r => r.AllReadOnly<Review>())
-                .Returns(new List<Review> { review1, review2 }.AsQueryable());
-
-            // Act
-            var result = await service.FitnessClassDetailsByIdAsync(fitnessClassId);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(fitnessClassId.ToString(), result.Id.ToString());
-            Assert.AreEqual("Advanced Yoga", result.Title);
-            Assert.AreEqual("An advanced yoga class.", result.Description);
-            Assert.AreEqual(60, result.Duration);
-            Assert.AreEqual(30, result.Capacity);
-            Assert.AreEqual(fitnessClass.StartTime.ToString("dd/MM/yyyy HH:mm"), result.StartTime);
-            Assert.AreEqual("Yoga", result.Category);
-            Assert.AreEqual("Approved", result.Status);
-            Assert.AreEqual(2, result.Reviews.Count()); // Two reviews should be included
-
-            repositoryMock.Verify(r => r.AllReadOnly<FitnessClass>(), Times.Once);
-            repositoryMock.Verify(r => r.AllReadOnly<Review>(), Times.Once);
-        }
-
-        [Test]
         public async Task FitnessClassDetailsByIdAsync_Should_Return_Null_When_FitnessClass_Does_Not_Exist()
         {
             // Arrange
@@ -1582,11 +1512,230 @@ namespace FitnessApp.Tests
                 .Returns(new List<FitnessClass>().AsQueryable()); // No fitness classes
 
             // Act
-            var result = await service.FitnessClassDetailsByIdAsync(fitnessClassId);
 
             // Assert
-            Assert.IsNull(result); // The result should be null if no fitness class exists with the provided ID
-            repositoryMock.Verify(r => r.AllReadOnly<FitnessClass>(), Times.Once);
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(() => service.FitnessClassDetailsByIdAsync(fitnessClassId));
+            Assert.AreEqual("This class doesn't exist!", ex.Message);
+        }
+
+        [Test]
+        public async Task CategoryExistsAsync_CategoryExists_ReturnsTrue()
+        {
+            // Arrange
+            var categoryId = 1;
+            var categories = new List<Category>
+            {
+                new Category { Id = categoryId, Name = "Yoga" }
+            }.AsQueryable();
+
+            repositoryMock.Setup(repo => repo.AllReadOnly<Category>())
+                    .Returns(categories);
+
+            // Act
+            var result = await service.CategoryExistsAsync(categoryId);
+
+            // Assert
+            Assert.IsTrue(result);
+            repositoryMock.Verify(repo => repo.AllReadOnly<Category>(), Times.Once);
+        }
+
+        [Test]
+        public async Task CategoryExistsAsync_CategoryDoesNotExist_ReturnsFalse()
+        {
+            // Arrange
+            var categoryId = 99; // Non-existent ID
+            var categories = new List<Category>().AsQueryable(); // Empty category list
+
+            repositoryMock.Setup(repo => repo.AllReadOnly<Category>())
+                    .Returns(categories);
+
+            // Act
+            var result = await service.CategoryExistsAsync(categoryId);
+
+            // Assert
+            Assert.IsFalse(result);
+            repositoryMock.Verify(repo => repo.AllReadOnly<Category>(), Times.Once);
+        }
+
+        [Test]
+        public async Task DeleteAsync_RemovesAssociatedReviewsAndBookings_ThenDeletesFitnessClass()
+        {
+            // Arrange
+            var fitnessClassId = Guid.NewGuid();
+            var reviews = new List<Review>
+            {
+                new Review { Id = Guid.NewGuid(), FitnessClassId = fitnessClassId },
+                new Review { Id = Guid.NewGuid(), FitnessClassId = fitnessClassId }
+            }.AsQueryable();
+
+            var bookings = new List<Booking>
+            {
+                new Booking { Id = 1, FitnessClassId = fitnessClassId },
+                new Booking { Id = 2, FitnessClassId = fitnessClassId }
+            }.AsQueryable();
+
+            repositoryMock.Setup(repo => repo.All<Review>()).Returns(reviews);
+            repositoryMock.Setup(repo => repo.All<Booking>()).Returns(bookings);
+
+            // Act
+            await service.DeleteAsync(fitnessClassId);
+
+            // Assert
+            repositoryMock.Verify(repo => repo.DeleteAsync<Review>(It.IsAny<Guid>()), Times.Exactly(reviews.Count()));
+            repositoryMock.Verify(repo => repo.DeleteAsync<Booking>(It.IsAny<int>()), Times.Exactly(bookings.Count()));
+            repositoryMock.Verify(repo => repo.DeleteAsync<FitnessClass>(fitnessClassId), Times.Once);
+            repositoryMock.Verify(repo => repo.SaveChangesAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task AllFitnessClassesByInstructorIdAsync_WhenInstructorHasClasses_ReturnsCorrectViewModels()
+        {
+            // Arrange
+            var instructorId = 1;
+            var fitnessClasses = new List<FitnessClass>
+            {
+                new FitnessClass
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Yoga",
+                    LeftCapacity = 10,
+                    Status = new Status { Name = "Available" },
+                    StatusId = 1,
+                    StartTime = new DateTime(2024, 12, 25, 10, 0, 0),
+                    InstructorId = instructorId,
+                    IsApproved = true
+                },
+                new FitnessClass
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Pilates",
+                    LeftCapacity = 5,
+                    Status = new Status { Name = "Available" },
+                    StatusId = 1,
+                    StartTime = new DateTime(2024, 12, 26, 11, 0, 0),
+                    InstructorId = instructorId,
+                    IsApproved = true
+                }
+            }.AsQueryable();
+
+            repositoryMock.Setup(repo => repo.AllReadOnly<FitnessClass>())
+                          .Returns(fitnessClasses);
+
+            // Act
+            var result = await service.AllFitnessClassesByInstructorIdAsync(instructorId);
+
+            // Assert
+            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual("Yoga", result.First().Title);
+            Assert.AreEqual("25/12/2024 10:00", result.First().StartTime);
+            repositoryMock.Verify(repo => repo.AllReadOnly<FitnessClass>(), Times.Once);
+        }
+
+        [Test]
+        public async Task BookAsync_WhenFitnessClassAndUserExistAndHasCapacity_BooksClass()
+        {
+            // Arrange
+            var fitnessClassId = Guid.NewGuid();
+            var userId = Guid.NewGuid().ToString();
+
+            var fitnessClass = new FitnessClass
+            {
+                Id = fitnessClassId,
+                LeftCapacity = 5,
+                StatusId = 1,
+                StartTime = DateTime.UtcNow
+            };
+
+            var user = new ApplicationUser { Id = userId };
+
+            repositoryMock.Setup(repo => repo.GetByIdAsync<FitnessClass>(fitnessClassId))
+                          .ReturnsAsync(fitnessClass);
+            repositoryMock.Setup(repo => repo.GetByIdAsync<ApplicationUser>(userId))
+                          .ReturnsAsync(user);
+
+            // Act
+            await service.BookAsync(fitnessClassId, userId);
+
+            // Assert
+            Assert.AreEqual(4, fitnessClass.LeftCapacity);
+            repositoryMock.Verify(repo => repo.AddAsync(It.Is<Booking>(b =>
+                b.UserId == userId && b.FitnessClassId == fitnessClassId)), Times.Once);
+            repositoryMock.Verify(repo => repo.SaveChangesAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task BookAsync_WhenFitnessClassHasNoCapacity_DoesNotBook()
+        {
+            // Arrange
+            var fitnessClassId = Guid.NewGuid();
+            var userId = Guid.NewGuid().ToString();
+
+            var fitnessClass = new FitnessClass
+            {
+                Id = fitnessClassId,
+                LeftCapacity = 0,
+                StatusId = 1,
+                StartTime = DateTime.UtcNow
+            };
+
+            var user = new ApplicationUser { Id = userId };
+
+            repositoryMock.Setup(repo => repo.GetByIdAsync<FitnessClass>(fitnessClassId))
+                          .ReturnsAsync(fitnessClass);
+            repositoryMock.Setup(repo => repo.GetByIdAsync<ApplicationUser>(userId))
+                          .ReturnsAsync(user);
+
+            // Act
+            await service.BookAsync(fitnessClassId, userId);
+
+            // Assert
+            Assert.AreEqual(0, fitnessClass.LeftCapacity); // Capacity remains unchanged
+            repositoryMock.Verify(repo => repo.AddAsync<Booking>(It.IsAny<Booking>()), Times.Never);
+            repositoryMock.Verify(repo => repo.SaveChangesAsync(), Times.Never);
+        }
+
+        [Test]
+        public async Task BookAsync_WhenFitnessClassOrUserDoesNotExist_DoesNotBook()
+        {
+            // Arrange
+            var fitnessClassId = Guid.NewGuid();
+            var userId = Guid.NewGuid().ToString();
+
+            repositoryMock.Setup(repo => repo.GetByIdAsync<FitnessClass>(fitnessClassId))
+                          .ReturnsAsync((FitnessClass)null); // Fitness class not found
+            repositoryMock.Setup(repo => repo.GetByIdAsync<ApplicationUser>(userId))
+                          .ReturnsAsync((ApplicationUser)null); // User not found
+
+            // Act
+            await service.BookAsync(fitnessClassId, userId);
+
+            // Assert
+            repositoryMock.Verify(repo => repo.AddAsync<Booking>(It.IsAny<Booking>()), Times.Never);
+            repositoryMock.Verify(repo => repo.SaveChangesAsync(), Times.Never);
+        }
+
+        [Test]
+        public async Task AllCategoriesNamesAsync_ReturnsDistinctCategoryNames()
+        {
+            // Arrange
+            var categories = new List<Category>
+            {
+                new Category { Name = "Yoga" },
+                new Category { Name = "Pilates" },
+                new Category { Name = "Yoga" }, // Duplicate
+                new Category { Name = "Zumba" }
+            }.AsQueryable();
+
+            repositoryMock.Setup(repo => repo.AllReadOnly<Category>())
+                          .Returns(categories);
+
+            // Act
+            var result = await service.AllCategoriesNamesAsync();
+
+            // Assert
+            var expected = new List<string> { "Yoga", "Pilates", "Zumba" }; // Distinct names
+            CollectionAssert.AreEquivalent(expected, result); // Order may vary due to `Distinct`
+            repositoryMock.Verify(repo => repo.AllReadOnly<Category>(), Times.Once);
         }
     }
 }

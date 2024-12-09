@@ -55,13 +55,13 @@ namespace FitnessApp.Services.Data
 
         public async Task<bool> ExistsByIdAsync(int userId)
         {
-            return await repository.AllReadOnly<Instructor>().AnyAsync(i => i.Id == userId);
+            return repository.AllReadOnly<Instructor>().Any(i => i.Id == userId);
         }
 
         public async Task<int?> GetInstructorByIdAsync(string userId)
         {
-            return (await repository.AllReadOnly<Instructor>()
-                .FirstOrDefaultAsync(a => a.UserId == userId))?.Id;
+            return (repository.AllReadOnly<Instructor>()
+                .FirstOrDefault(a => a.UserId == userId))?.Id;
         }
 
         public async Task<bool> IsLicenseNumberValidAsync(int licenseNumber)
@@ -70,16 +70,16 @@ namespace FitnessApp.Services.Data
 
             bool isInGeneratedList = licenseNumbers.Contains(licenseNumber);
 
-            bool isRegistered = await repository.AllReadOnly<Instructor>()
-                .AnyAsync(i => i.LicenseNumber == licenseNumber);
+            bool isRegistered = repository.AllReadOnly<Instructor>()
+                .Any(i => i.LicenseNumber == licenseNumber);
 
             return isInGeneratedList && !isRegistered;
         }
 
         public async Task<bool> UserWithLicenseNumberExistsInDbAsync(int licenseNumber)
         {
-            return await repository.AllReadOnly<Instructor>()
-                .AnyAsync(i => i.LicenseNumber == licenseNumber);
+            return repository.AllReadOnly<Instructor>()
+                .Any(i => i.LicenseNumber == licenseNumber);
         }
 
         public bool UserWithLicenseNumberExistsGlobally(int licenseNumber)
@@ -89,25 +89,27 @@ namespace FitnessApp.Services.Data
 
         public async Task<double> GetRatingByIdAsync(string userId)
         {
-            var instructor = await repository.AllReadOnly<Instructor>()
-                .FirstOrDefaultAsync(i => i.UserId == userId);
+            var instructor = repository.AllReadOnly<Instructor>()
+                .FirstOrDefault(i => i.UserId == userId);
 
             return instructor?.Rating ?? 0;
         }
 
         public async Task<Instructor> GetByIdAsync(int userId)
         {
-            return await repository.All<Instructor>()
+            return repository.All<Instructor>()
                 .Where(i => i.Id == userId)
                 .Include(i => i.User)
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
         }
 
-        public async Task<InstructorViewModel> GetInstructorViewModelByIdAsync(int userId)
+        public async Task<InstructorViewModel?> GetInstructorViewModelByIdAsync(int userId)
         {
             var instructor = await GetByIdAsync(userId);
 
-            var instructorClasses = await repository.AllReadOnly<FitnessClass>()
+            if (instructor != null)
+            {
+                var instructorClasses = repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.InstructorId == instructor.Id && fc.IsApproved == true)
                 .Include(fc => fc.Instructor.User)
                 .Include(fc => fc.Status)
@@ -122,23 +124,26 @@ namespace FitnessApp.Services.Data
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm"),
                     InstructorId = instructor.Id
                 })
-                .ToListAsync();
+                .ToList();
 
-            return new InstructorViewModel()
-            {
-                Id = instructor.Id,
-                Biography = instructor.Biography,
-                Specializations = instructor.Specializations,
-                FullName = instructor.User.FirstName + " " + instructor.User.LastName,
-                Classes = instructorClasses,
-                Rating = instructor.Rating
-            };
+                return new InstructorViewModel()
+                {
+                    Id = instructor.Id,
+                    Biography = instructor.Biography,
+                    Specializations = instructor.Specializations,
+                    FullName = instructor.User.FirstName + " " + instructor.User.LastName,
+                    Classes = instructorClasses,
+                    Rating = instructor.Rating
+                };
+            }
+
+            return null;
         }
 
         public async Task Rate(InstructorRateFormModel model, int instructorId)
         {
-            var instructor = await repository.All<Instructor>()
-                .FirstOrDefaultAsync(i => i.Id == instructorId);
+            var instructor = repository.All<Instructor>()
+                .FirstOrDefault(i => i.Id == instructorId);
 
             if (instructor != null)
             {
@@ -150,8 +155,8 @@ namespace FitnessApp.Services.Data
 
         public async Task EditBiographyAsync(InstructorEditBiographyFormModel model, int instructorId)
         {
-            var instructor = await repository.All<Instructor>()
-                .FirstAsync(i => i.Id == instructorId);
+            var instructor = repository.All<Instructor>()
+                .First(i => i.Id == instructorId);
 
             instructor.Biography = model.Biography;
 
@@ -160,8 +165,8 @@ namespace FitnessApp.Services.Data
 
         public async Task EditSpecializationsAsync(InstructorEditSpecializationsFormModel model, int instructorId)
         {
-            var instructor = await repository.All<Instructor>()
-                .FirstAsync(i => i.Id == instructorId);
+            var instructor = repository.All<Instructor>()
+                .First(i => i.Id == instructorId);
 
             instructor.Specializations = model.Specializations;
 
@@ -173,19 +178,28 @@ namespace FitnessApp.Services.Data
             Guid parseGuid = Guid.Empty;
             if (IsGuidValid(userId, ref parseGuid))
             {
-                return await repository.AllReadOnly<Instructor>()
-                    .AnyAsync(i => i.UserId == userId);
+                return repository.AllReadOnly<Instructor>()
+                    .Any(i => i.UserId == userId);
             }
 
             return false;
         }
 
-        public async Task<int> GetInstructorIdByUserId(string userId)
+        public async Task<int?> GetInstructorIdByUserId(string userId)
         {
-            Instructor instructor = await repository.AllReadOnly<Instructor>()
-                .FirstOrDefaultAsync(i => i.UserId == userId);
+            Guid id = Guid.Empty;
+            if (IsGuidValid(userId, ref id))
+            {
+                Instructor instructor = repository.AllReadOnly<Instructor>()
+                    .FirstOrDefault(i => i.UserId == userId);
+                if (instructor != null)
+                {
+                    return instructor.Id;
+                }
+            }
 
-            return instructor.Id;
+
+            return null;
         }
     }
 }

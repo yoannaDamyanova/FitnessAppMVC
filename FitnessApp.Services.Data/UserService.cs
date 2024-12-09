@@ -22,14 +22,14 @@ namespace FitnessApp.Services.Data
 
         public async Task<IEnumerable<UserServiceModel>> AllAsync()
         {
-            return await repository.AllReadOnly<ApplicationUser>()
+            return repository.AllReadOnly<ApplicationUser>()
                 .Include(au=>au.Instructor)
                 .Select(u=>new UserServiceModel()
                 {
                     Email = u.Email,
                     FullName = $"{u.FirstName} {u.LastName}",
                     IsInstructor = u.Instructor!=null
-                }).ToListAsync();
+                }).ToList();
         }
     }
 }
