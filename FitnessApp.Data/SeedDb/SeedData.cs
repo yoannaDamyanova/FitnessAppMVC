@@ -27,12 +27,18 @@ namespace FitnessApp.Data.SeedDb
         public Status FinishedStatus { get; set; }
         public Status FullStatus { get; set; }
 
+        public FitnessClass ActiveFitnessClass { get; set; }
+        public FitnessClass CanceledFitnessClass { get; set; }
+        public FitnessClass FinishedFitnessClass { get; set; }
+        public FitnessClass FullFitnessClass { get; set; }
+
         public SeedData()
         {
             SeedUsers();
             SeedInstructor();
             SeedCategories();
             SeedStatuses();
+            SeedFitnessClasses();
         }
 
         private void SeedUsers()
@@ -166,6 +172,69 @@ namespace FitnessApp.Data.SeedDb
             {
                 Id = 4,
                 Name = "Full"
+            };
+        }
+
+        private void SeedFitnessClasses()
+        {
+            ActiveFitnessClass = new FitnessClass
+            {
+                Id = Guid.NewGuid(),
+                Title = "Morning Yoga",
+                Description = "Start your day with a relaxing yoga session to stretch and recharge.",
+                CategoryId = 1,  // Yoga category
+                StatusId = 1,    // Active
+                InstructorId = 1,  // InstructorId = 1
+                StartTime = new DateTime(2024, 12, 22, 7, 0, 0),  // 7:00 AM on Dec 10, 2024
+                Duration = 60,  // 1 hour
+                Capacity = 20,  // Maximum of 20 participants
+                LeftCapacity = 20,  // All spots available
+                IsApproved = true
+            };
+
+            CanceledFitnessClass = new FitnessClass
+            {
+                Id = Guid.NewGuid(),
+                Title = "Pilates for Flexibility",
+                Description = "Improve your flexibility with this focused Pilates class.",
+                CategoryId = 2,  // Pilates category
+                StatusId = 2,    // Canceled
+                InstructorId = 1,  // InstructorId = 1
+                StartTime = new DateTime(2024, 12, 12, 10, 0, 0),  // 10:00 AM on Dec 12, 2024
+                Duration = 50,  // 50 minutes
+                Capacity = 12,  // Maximum of 12 participants
+                LeftCapacity = 7,  // Some spots have been taken
+                IsApproved = true
+            };
+
+            FinishedFitnessClass = new FitnessClass
+            {
+                Id = Guid.NewGuid(),
+                Title = "Zumba Dance Party",
+                Description = "Join us for a fun and energetic Zumba dance workout.",
+                CategoryId = 3,  // Cycling category 
+                StatusId = 3,    // Finished
+                InstructorId = 1,  // InstructorId = 1
+                StartTime = new DateTime(2024, 12, 5, 18, 0, 0),  // 6:00 PM on Dec 5, 2024
+                Duration = 60,  // 1 hour
+                Capacity = 25,  // Maximum of 25 participants
+                LeftCapacity = 0,  // Class is full, no spots left
+                IsApproved = true
+            };
+
+            FullFitnessClass = new FitnessClass
+            {
+                Id = Guid.NewGuid(),
+                Title = "HIIT Strength Training",
+                Description = "Build strength and stamina with high-intensity interval training.",
+                CategoryId = 6,  // HIIT category
+                StatusId = 4,    // Full
+                InstructorId = 1,  // InstructorId = 1
+                StartTime = new DateTime(2024, 12, 11, 14, 30, 0),  // 2:30 PM on Dec 11, 2024
+                Duration = 40,  // 40 minutes
+                Capacity = 20,  // Maximum of 20 participants
+                LeftCapacity = 0,  // Class is full
+                IsApproved = true
             };
         }
     }

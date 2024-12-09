@@ -52,7 +52,5 @@ namespace FitnessApp.Data.Models
         [Required]
         [ForeignKey(nameof(StatusId))]
         public virtual Status Status { get; set; } = null!;
-
-        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

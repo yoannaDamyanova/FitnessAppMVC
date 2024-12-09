@@ -25,6 +25,7 @@ namespace FitnessApp.Data
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new UserClaimsConfiguration());
             modelBuilder.ApplyConfiguration(new StatusConfiguration());
+            modelBuilder.ApplyConfiguration(new FitnessClassConfiguration());
 
             modelBuilder.Entity<Booking>()
                 .HasIndex(b => new { b.UserId, b.FitnessClassId })
