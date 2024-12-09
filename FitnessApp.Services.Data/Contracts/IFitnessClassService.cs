@@ -13,8 +13,6 @@ namespace FitnessApp.Services.Data.Contracts
 
         Task<IEnumerable<FitnessClassCategoryServiceModel>> AllCategoriesAsync();
 
-        IEnumerable<Status> AllStatuses();
-
         Task<bool> CategoryExistsAsync(int categoryId);
 
         Task<Guid> AddClassAsync(FitnessClassFormModel model, int instructorId);

@@ -173,13 +173,13 @@ namespace FitnessApp.Services.Data
 
         public async Task<IEnumerable<FitnessClassCategoryServiceModel>> AllCategoriesAsync()
         {
-            return await repository.AllReadOnly<Category>()
+            return repository.AllReadOnly<Category>()
                 .Select(c => new FitnessClassCategoryServiceModel()
                 {
                     Id = c.Id,
                     Name = c.Name,
                 })
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<IEnumerable<string>> AllCategoriesNamesAsync()
@@ -194,12 +194,13 @@ namespace FitnessApp.Services.Data
         {
             return await repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.InstructorId == instructorId && fc.IsApproved == true)
+                .Include(fc => fc.Status)
                 .Select(fc => new FitnessClassInstructorViewModel
                 {
                     FitnessClassId = fc.Id,
                     Title = fc.Title,
                     LeftCapacity = fc.LeftCapacity,
-                    Status = AllStatuses().Where(s => s.Id == fc.StatusId).Select(s => s.Name).First(),
+                    Status = fc.Status.Name,
                     StartTime = fc.StartTime.ToString("dd/MM/yyyy HH:mm")
                 }).ToListAsync();
         }
@@ -291,43 +292,39 @@ namespace FitnessApp.Services.Data
 
                 await repository.SaveChangesAsync();
             }
-
-
         }
 
         public async Task<bool> ExistsAsync(Guid id)
         {
-            bool reuslt = await repository.AllReadOnly<FitnessClass>()
-                .AnyAsync(fc => fc.Id == id);
+            bool reuslt = repository.AllReadOnly<FitnessClass>()
+                .Any(fc => fc.Id == id);
 
             return reuslt;
         }
 
         public async Task<FitnessClassDetailsServiceModel> FitnessClassDetailsByIdAsync(Guid id)
         {
-            var fitnessClass = await repository.AllReadOnly<FitnessClass>()
-                .FirstOrDefaultAsync(fc => fc.Id == id);
+            var fitnessClass = repository.AllReadOnly<FitnessClass>()
+                .Include(fc => fc.Instructor)
+                .Include(fc => fc.Instructor.User)
+                .FirstOrDefault(fc => fc.Id == id);
 
             var reviews = repository.AllReadOnly<Review>()
                 .Where(r => r.FitnessClassId == id)
-                .Include(f => f.FitnessClass)
-                .Include(r => r.FitnessClass.Instructor.User)
+                .Include(r => r.User)
                 .Select(r => new ReviewViewModel()
                 {
-                    InstructorFullName = r.FitnessClass.Instructor.User.FirstName + " " + r.FitnessClass.Instructor.User.LastName,
-                    FitnessClassTitle = r.FitnessClass.Title,
+                    InstructorFullName = fitnessClass.Instructor.User.FirstName + " " + r.FitnessClass.Instructor.User.LastName,
+                    FitnessClassTitle = fitnessClass.Title,
                     Rating = r.Rating,
                     Comments = r.Comments,
                     ReviewerName = r.User.FirstName + " " + r.User.LastName,
                 })
                 .ToList();
 
-            var statuses = AllStatuses();
-
-            var status = statuses.FirstOrDefault(s => s.Id == fitnessClass.StatusId).Name;
-
-            return await repository.AllReadOnly<FitnessClass>()
+            return repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Id == id)
+                .Include(fc => fc.Status)
                 .Select(fc => new FitnessClassDetailsServiceModel
                 {
                     Id = fc.Id,
@@ -344,9 +341,9 @@ namespace FitnessApp.Services.Data
                         FullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName
                     },
                     InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName,
-                    Status = status
+                    Status = fc.Status.Name
                 })
-                .FirstAsync();
+                .First();
         }
 
         public async Task<FitnessClass> GetByIdAsync(Guid fitnessClassId)
@@ -356,7 +353,7 @@ namespace FitnessApp.Services.Data
 
         public async Task<FitnessClassFormModel?> GetFitnessClassFormModelByIdAsync(string id)
         {
-            return await repository.AllReadOnly<FitnessClass>()
+            return repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.Id.ToString() == id)
                 .Select(fc => new FitnessClassFormModel()
                 {
@@ -368,25 +365,25 @@ namespace FitnessApp.Services.Data
                     Duration = fc.Duration,
                     Capacity = fc.Capacity,
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
         }
 
         public async Task<bool> HasInstructorWithIdAsync(Guid fitnessClassId, string userId)
         {
-            return await repository.AllReadOnly<FitnessClass>()
-                .AnyAsync(fc => fc.Instructor.UserId == userId
+            return repository.AllReadOnly<FitnessClass>()
+                .Any(fc => fc.Instructor.UserId == userId
                                 && fc.Id == fitnessClassId);
         }
 
         public async Task<bool> IsBookedByIUserWithIdAsync(Guid id, string userId)
         {
-            return await repository.AllReadOnly<Booking>()
-                .AnyAsync(b => b.UserId == userId && b.FitnessClassId == id);
+            return repository.AllReadOnly<Booking>()
+                .Any(b => b.UserId == userId && b.FitnessClassId == id);
         }
 
         public async Task<IEnumerable<FitnessClassIndexServiceModel>> LastFiveHousesAsync()
         {
-            var classes = await repository.AllReadOnly<FitnessClass>()
+            var classes = repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.StatusId == 1 && fc.Capacity > 0 && fc.IsApproved == true)
                 .Take(5)
                 .Select(fc => new FitnessClassIndexServiceModel()
@@ -397,7 +394,7 @@ namespace FitnessApp.Services.Data
                     Duration = fc.Duration.ToString(),
                     InstructorName = fc.Instructor.User.FirstName
                 })
-                .ToListAsync();
+                .ToList();
 
             return classes;
         }
@@ -406,8 +403,8 @@ namespace FitnessApp.Services.Data
         {
             var fitnessClass = await repository.GetByIdAsync<FitnessClass>(id);
 
-            var booking = await repository.AllReadOnly<Booking>()
-                .FirstOrDefaultAsync(b => b.UserId == userId && b.FitnessClassId == id);
+            var booking = repository.AllReadOnly<Booking>()
+                .FirstOrDefault(b => b.UserId == userId && b.FitnessClassId == id);
 
             if (fitnessClass != null)
             {
@@ -432,14 +429,11 @@ namespace FitnessApp.Services.Data
         {
             var fitnessClass = await repository.GetByIdAsync<FitnessClass>(fitnessClassId);
 
-            var statuses = AllStatuses();
-            var canceledStatus = statuses.FirstOrDefault(s => s.Name == "Canceled");
+            fitnessClass.StatusId = 2; // Canceled status id
 
-            fitnessClass.StatusId = canceledStatus.Id;
-
-            var bookings = await repository.All<Booking>()
+            var bookings = repository.All<Booking>()
                 .Where(b => b.FitnessClassId == fitnessClassId)
-                .ToListAsync();
+                .ToList();
 
             if (bookings.Any())
             {
@@ -452,17 +446,12 @@ namespace FitnessApp.Services.Data
             await repository.SaveChangesAsync();
         }
 
-        public IEnumerable<Status> AllStatuses()
-        {
-            return repository.AllReadOnly<Status>();
-        }
-
         public async Task<IEnumerable<string>> AllStatusesNamesAsync()
         {
-            return await repository.AllReadOnly<Status>()
+            return repository.AllReadOnly<Status>()
                 .Select(b => b.Name)
                 .Distinct()
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task WriteReviewAsync(FitnessClassReviewFormModel model, string userId)
@@ -483,15 +472,13 @@ namespace FitnessApp.Services.Data
 
         public async Task<bool> UserHasReviewedClassAsync(string userId, Guid fitnessClassId)
         {
-            return await repository.AllReadOnly<Review>()
-                .AnyAsync(r => r.FitnessClassId == fitnessClassId && r.UserId == userId);
+            return repository.AllReadOnly<Review>()
+                .Any(r => r.FitnessClassId == fitnessClassId && r.UserId == userId);
         }
 
         public async Task<IEnumerable<FitnessClassServiceModel>> GetUnApprovedAsync()
         {
-            var statuses = await repository.AllReadOnly<Status>().ToListAsync();
-
-            return await repository.AllReadOnly<FitnessClass>()
+            var classes = repository.AllReadOnly<FitnessClass>()
                 .Where(fc => fc.IsApproved == false)
                 .Include(fc => fc.Status)
                 .Include(fc => fc.Instructor)
@@ -507,8 +494,9 @@ namespace FitnessApp.Services.Data
                     InstructorId = fc.InstructorId,
                     InstructorFullName = fc.Instructor.User.FirstName + " " + fc.Instructor.User.LastName
                 })
-                .ToListAsync();
+                .ToList();
 
+            return classes;
         }
 
         public async Task ApproveFitnessClassAsync(Guid fitnessClassId)
@@ -525,7 +513,7 @@ namespace FitnessApp.Services.Data
 
         public async Task<IEnumerable<ReviewViewModel>> AllReviewsAsync()
         {
-            return await repository.AllReadOnly<Review>()
+            return repository.AllReadOnly<Review>()
                 .Include(r => r.User)
                 .Include(r => r.FitnessClass)
                 .Include(r => r.FitnessClass.Instructor.User)
@@ -537,12 +525,12 @@ namespace FitnessApp.Services.Data
                     ReviewerName = r.User.FirstName + " " + r.User.LastName,
                     Comments = r.Comments,
                 })
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<IEnumerable<BookingViewModel>> AllBookingsAsync()
         {
-            return await repository.AllReadOnly<Booking>()
+            return repository.AllReadOnly<Booking>()
                 .Include(b => b.FitnessClass)
                 .Include(b => b.FitnessClass.Instructor.User)
                 .Include(b => b.User)
@@ -553,7 +541,7 @@ namespace FitnessApp.Services.Data
                     InstructorFullName = b.FitnessClass.Instructor.User.FirstName + " " + b.FitnessClass.Instructor.User.LastName,
                     BookingDate = b.FitnessClass.StartTime.ToString("dd/MM/yyyy HH:mm")
                 })
-                .ToListAsync();
+                .ToList();
         }
     }
 }
