@@ -16,10 +16,10 @@ Functunalities:
 Disclaimer: To become instructor a user has to provide a "legitimate" License number. License numbers are generated using a background service and are used just for showcasing (they wont regenerate if they already exist). All license numbers can be found in the FitnessApp.Services.Data folder in the subfolder Licenses.
 
 Credentials:
-Admin:
+1. Admin:
    - email: admin@gmail.com
    - password: admin123
-Instructor:
+2. Instructor:
    - email: instructor@gmail.com
    - password: john123
 
