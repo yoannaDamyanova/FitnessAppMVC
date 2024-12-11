@@ -27,6 +27,10 @@ namespace FitnessApp.Services.Data
 
             bool tryParse = DateTime.TryParseExact(model.StartTime, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date);
 
+            if (instructorId == 0)
+            {
+
+            }
             var capacity = model.Capacity;
             FitnessClass fitnessClass = new FitnessClass()
             {

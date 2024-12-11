@@ -10,7 +10,7 @@ namespace FitnessApp.Data.SeedDb
         {
             var data = new SeedData();
 
-            builder.HasData(data.Instructor);
+            builder.HasData(data.Instructor, data.AdminInstructor);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace FitnessApp.Services.Data
     {
         private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly ILogger<FitnessClassStatusUpdateService> logger;
-        private readonly TimeSpan checkInterval = TimeSpan.FromMinutes(15);
+        private readonly TimeSpan checkInterval = TimeSpan.FromSeconds(30);
 
         public FitnessClassStatusUpdateService(IServiceScopeFactory _serviceScopeFactory, ILogger<FitnessClassStatusUpdateService> _logger)
         {
@@ -60,13 +60,18 @@ namespace FitnessApp.Services.Data
                     var bookings = await repository.AllReadOnly<Booking>()
                         .Where(b => b.FitnessClassId == fitnessClass.Id)
                         .ToListAsync();
-                    foreach (var booking in bookings)
-                    {
-                        await repository.DeleteAsync<Booking>(booking);
-                    }
 
                     await repository.SaveChangesAsync();
 
+                    if (bookings != null)
+                    {
+                        foreach (var booking in bookings)
+                        {
+                            await repository.DeleteAsync<Booking>(booking);
+                        }
+                    }
+
+                    await repository.SaveChangesAsync();
                 }
 
                 logger.LogInformation($"Updated {classesToUpdate.Count} fitness classes to 'Finished' status.");

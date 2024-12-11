@@ -4,7 +4,7 @@ namespace FitnessApp.Web.ViewModels.FitnessClass
 {
     public class AllFitnessClassQueryModel
     {
-        public int FitnessClassesPerPage { get; } = 5;
+        public int FitnessClassesPerPage { get; } = 3;
 
         public string Category { get; init; } = null!;
 
