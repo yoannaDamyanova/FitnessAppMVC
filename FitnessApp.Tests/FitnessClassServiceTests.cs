@@ -14,8 +14,6 @@ namespace FitnessApp.Tests
     using System.Linq;
     using System.Threading.Tasks;
     using System.Globalization;
-    using FitnessApp.Web.Infrastructure.Enumerations;
-    using Microsoft.Extensions.Logging;
     using FitnessApp.Services.Data.Contracts;
 
     [TestFixture]

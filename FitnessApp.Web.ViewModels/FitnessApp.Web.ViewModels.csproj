@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Node.js" Version="5.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FitnessApp.Common\FitnessApp.Common.csproj" />
     <ProjectReference Include="..\FitnessApp.Data.Models\FitnessApp.Data.Models.csproj" />
     <ProjectReference Include="..\FitnessApp.Web.Infrastructure\FitnessApp.Web.Infrastructure.csproj" />
